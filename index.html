@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AdProfitX Compressor - Free Image & PDF Compression Tool</title>
     
-    <!-- SEO Meta Tags - To be customized manually -->
+    <!-- SEO Meta Tags -->
     <meta name="description" content="Free online image and PDF compression tool. Reduce file sizes while maintaining quality. Support for JPEG, PNG, WebP, and PDF formats. No registration required.">
     <meta name="keywords" content="image compression, PDF compression, reduce file size, optimize images, compress PDF, free tool">
     <meta name="author" content="AdProfitX Compressor">
@@ -33,7 +34,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- PDF-lib Library -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -41,300 +42,63 @@
     <!-- Google AdSense Code - To be added manually -->
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
     
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
-    
-    <!-- Schema Markup -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "AdProfitX Compressor",
-        "description": "Free online image and PDF compression tool",
-        "url": "",
-        "applicationCategory": "UtilityApplication",
-        "operatingSystem": "Web Browser",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
-        "featureList": [
-            "Image Compression",
-            "PDF Compression",
-            "Batch Processing",
-            "Multiple Format Support"
-        ]
-    }
-    </script>
-</head>
-<body>
-    <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="loading-overlay">
-        <div class="loading-spinner">
-            <i class="fas fa-spinner fa-spin"></i>
-            <p>Processing your file...</p>
-        </div>
-    </div>
+    <!-- Enhanced Inline Styles for GitHub Pages -->
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-compress-arrows-alt"></i>
-                    <h1>AdProfitX Compressor</h1>
-                </div>
-                <nav class="nav">
-                    <a href="#home" class="nav-link active">Home</a>
-                    <a href="#features" class="nav-link">Features</a>
-                    <a href="#about" class="nav-link">About</a>
-                </nav>
-            </div>
-        </div>
-    </header>
+        html {
+            scroll-behavior: smooth;
+        }
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <div class="content-grid">
-                <!-- Left Ad Column -->
-                <aside class="ad-column ad-left">
-                    <div class="ad-placeholder">
-                        <!-- Google AdSense Ad Unit 1 - To be added manually -->
-                        <p class="ad-label">Advertisement</p>
-                        <div class="ad-content">
-                            <!-- AdSense code will be inserted here manually -->
-                        </div>
-                    </div>
-                </aside>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
 
-                <!-- Main Content Area -->
-                <section class="main-content" id="home">
-                    <!-- Hero Section -->
-                    <div class="hero">
-                        <h2 class="hero-title">Free Image & PDF Compression Tool</h2>
-                        <p class="hero-subtitle">Reduce file sizes while maintaining quality. Support for JPEG, PNG, WebP, and PDF formats.</p>
-                        
-                        <!-- Compression Tool -->
-                        <div class="compression-tool">
-                            <!-- File Type Selector -->
-                            <div class="tool-tabs">
-                                <button class="tab-btn active" data-type="image">
-                                    <i class="fas fa-image"></i>
-                                    Image Compression
-                                </button>
-                                <button class="tab-btn" data-type="pdf">
-                                    <i class="fas fa-file-pdf"></i>
-                                    PDF Compression
-                                </button>
-                            </div>
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
 
-                            <!-- Upload Area -->
-                            <div class="upload-area" id="uploadArea">
-                                <div class="upload-content">
-                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                                    <h3>Drag & Drop Files Here</h3>
-                                    <p>or click to browse files</p>
-                                    <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.webp,.pdf" hidden>
-                                    <button class="browse-btn" onclick="document.getElementById('fileInput').click()">
-                                        <i class="fas fa-folder-open"></i>
-                                        Browse Files
-                                    </button>
-                                    <div class="supported-formats">
-                                        <small>Supported formats: JPEG, PNG, WebP, PDF</small>
-                                    </div>
-                                </div>
-                            </div>
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
 
-                            <!-- Advanced Options -->
-                            <div class="advanced-options">
-                                <button class="options-toggle" id="optionsToggle">
-                                    <i class="fas fa-cog"></i>
-                                    Advanced Options
-                                    <i class="fas fa-chevron-down"></i>
-                                </button>
-                                <div class="options-panel" id="optionsPanel">
-                                    <div class="option-group">
-                                        <label for="qualitySlider">Quality Level:</label>
-                                        <input type="range" id="qualitySlider" min="10" max="100" value="80" class="slider">
-                                        <span id="qualityValue">80%</span>
-                                    </div>
-                                    <div class="option-group">
-                                        <label for="formatSelect">Output Format:</label>
-                                        <select id="formatSelect" class="select-input">
-                                            <option value="original">Keep Original</option>
-                                            <option value="jpeg">JPEG</option>
-                                            <option value="png">PNG</option>
-                                            <option value="webp">WebP</option>
-                                        </select>
-                                    </div>
-                                    <div class="option-group">
-                                        <label for="resizeToggle">
-                                            <input type="checkbox" id="resizeToggle">
-                                            Resize Images
-                                        </label>
-                                        <div class="resize-options" id="resizeOptions" style="display: none;">
-                                            <input type="number" id="widthInput" placeholder="Width" min="1">
-                                            <span>×</span>
-                                            <input type="number" id="heightInput" placeholder="Height" min="1">
-                                            <label>
-                                                <input type="checkbox" id="aspectRatio" checked>
-                                                Maintain aspect ratio
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
 
-                            <!-- File List -->
-                            <div class="file-list" id="fileList" style="display: none;"></div>
+        .loading-spinner {
+            text-align: center;
+            color: white;
+        }
 
-                            <!-- Compression Results -->
-                            <div class="results-area" id="resultsArea" style="display: none;">
-                                <h3>Compression Results</h3>
-                                <div class="results-grid" id="resultsGrid"></div>
-                                <button class="download-all-btn" id="downloadAllBtn">
-                                    <i class="fas fa-download"></i>
-                                    Download All
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Features Section -->
-                    <section id="features" class="features">
-                        <h2>Why Choose AdProfitX Compressor?</h2>
-                        <div class="features-grid">
-                            <div class="feature-card">
-                                <i class="fas fa-shield-alt"></i>
-                                <h3>100% Secure</h3>
-                                <p>All processing happens in your browser. Your files never leave your device.</p>
-                            </div>
-                            <div class="feature-card">
-                                <i class="fas fa-rocket"></i>
-                                <h3>Lightning Fast</h3>
-                                <p>Advanced algorithms ensure quick compression without compromising quality.</p>
-                            </div>
-                            <div class="feature-card">
-                                <i class="fas fa-mobile-alt"></i>
-                                <h3>Mobile Friendly</h3>
-                                <p>Works perfectly on all devices - desktop, tablet, and mobile.</p>
-                            </div>
-                            <div class="feature-card">
-                                <i class="fas fa-layer-group"></i>
-                                <h3>Batch Processing</h3>
-                                <p>Compress multiple files at once to save time and effort.</p>
-                            </div>
-                            <div class="feature-card">
-                                <i class="fas fa-sliders-h"></i>
-                                <h3>Advanced Options</h3>
-                                <p>Fine-tune compression settings for optimal results.</p>
-                            </div>
-                            <div class="feature-card">
-                                <i class="fas fa-heart"></i>
-                                <h3>Completely Free</h3>
-                                <p>No registration, no limits, no watermarks. Just pure compression power.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Middle Ad -->
-                    <div class="ad-horizontal">
-                        <div class="ad-placeholder">
-                            <!-- Google AdSense Ad Unit 2 - To be added manually -->
-                            <p class="ad-label">Advertisement</p>
-                            <div class="ad-content">
-                                <!-- AdSense code will be inserted here manually -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- About Section -->
-                    <section id="about" class="about">
-                        <h2>About AdProfitX Compressor</h2>
-                        <div class="about-content">
-                            <p>AdProfitX Compressor is a professional-grade online compression tool designed to help you reduce file sizes without sacrificing quality. Whether you're optimizing images for web use or compressing PDFs for easier sharing, our advanced algorithms ensure the best possible results.</p>
-                            
-                            <div class="stats-grid">
-                                <div class="stat-item">
-                                    <h3>50M+</h3>
-                                    <p>Files Compressed</p>
-                                </div>
-                                <div class="stat-item">
-                                    <h3>99.9%</h3>
-                                    <p>Uptime</p>
-                                </div>
-                                <div class="stat-item">
-                                    <h3>4.9/5</h3>
-                                    <p>User Rating</p>
-                                </div>
-                                <div class="stat-item">
-                                    <h3>24/7</h3>
-                                    <p>Availability</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </section>
-
-                <!-- Right Ad Column -->
-                <aside class="ad-column ad-right">
-                    <div class="ad-placeholder">
-                        <!-- Google AdSense Ad Unit 3 - To be added manually -->
-                        <p class="ad-label">Advertisement</p>
-                        <div class="ad-content">
-                            <!-- AdSense code will be inserted here manually -->
-                        </div>
-                    </div>
-                </aside>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>AdProfitX Compressor</h4>
-                    <p>Professional image and PDF compression tool. Free, fast, and secure.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Features</h4>
-                    <ul>
-                        <li>Image Compression</li>
-                        <li>PDF Compression</li>
-                        <li>Batch Processing</li>
-                        <li>Advanced Options</li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Support</h4>
-                    <ul>
-                        <li>FAQ</li>
-                        <li>Contact Us</li>
-                        <li>Privacy Policy</li>
-                        <li>Terms of Service</li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Connect</h4>
-                    <div class="social-links">
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 AdProfitX Compressor. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="script.js"></script>
-</body>
-</html>
+        .loading-spinner i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #667eea;
+            animation: spin 2s linear infinite;
