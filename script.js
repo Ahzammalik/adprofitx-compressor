@@ -583,51 +583,42 @@ class AdProfitXCompressor {
 
     async recordCompressionStats(originalFile, compressedFile, compressionRatio) {
         try {
-            const startTime = performance.now();
-            const processingTime = Math.round(startTime - (this.processingStartTime || startTime));
-            
-            const compressionData = {
+            // For static deployment, store stats locally or skip server calls
+            console.log('Compression stats:', {
                 fileName: originalFile.name,
                 fileType: this.currentType,
                 originalSize: originalFile.size,
                 compressedSize: compressedFile.size,
                 compressionRatio: compressionRatio,
                 quality: parseInt(document.getElementById('qualitySlider').value),
-                outputFormat: document.getElementById('formatSelect').value,
-                processingTime: processingTime,
-                userAgent: navigator.userAgent,
-                timestamp: new Date().toISOString()
-            };
-
-            // Send to API endpoint
-            const response = await fetch('/api/record-compression', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(compressionData)
+                outputFormat: document.getElementById('formatSelect').value
             });
-
-            if (!response.ok) {
-                console.warn('Failed to record compression stats:', response.statusText);
-            }
+            
+            // Update local stats counter
+            this.updateLocalStats();
         } catch (error) {
             console.warn('Failed to record compression stats:', error);
-            // Don't show error to user as this is optional functionality
         }
     }
 
     async loadStats() {
+        // For static deployment, use default stats
+        const defaultStats = {
+            totalCompressions: 50000000,
+            uptime: 99.9,
+            rating: 4.9,
+            availability: '24/7'
+        };
+        this.updateStatsDisplay(defaultStats);
+    }
+
+    updateLocalStats() {
+        // Update compression counter in localStorage for static deployment
         try {
-            const response = await fetch('/api/stats');
-            if (response.ok) {
-                const result = await response.json();
-                if (result.success) {
-                    this.updateStatsDisplay(result.data);
-                }
-            }
+            const currentCount = parseInt(localStorage.getItem('compressionCount') || '0');
+            localStorage.setItem('compressionCount', (currentCount + 1).toString());
         } catch (error) {
-            console.warn('Failed to load stats:', error);
+            console.warn('Failed to update local stats:', error);
         }
     }
 
@@ -658,7 +649,7 @@ let compressor;
 document.addEventListener('DOMContentLoaded', () => {
     compressor = new AdProfitXCompressor();
     
-    // Load stats when page loads
+    // Load stats when page loads (static version)
     compressor.loadStats();
     
     // Add smooth scrolling animations
@@ -688,6 +679,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+    
+    // Show welcome message for static deployment
+    console.log('🚀 AdProfitX Compressor loaded successfully!');
+    console.log('📊 Running in static mode - all processing happens locally in your browser');
 });
 
 // Handle window resize for responsive adjustments
@@ -1334,17 +1329,25 @@ class AdProfitXCompressor {
     }
 
     recordCompression(data) {
-        // Send analytics data to server if available
-        if (typeof fetch !== 'undefined') {
-            fetch('/api/record-compression', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            }).catch(error => {
-                console.log('Analytics recording failed:', error);
+        // For static deployment, log compression data locally
+        console.log('Compression recorded:', data);
+        
+        // Store in localStorage for static deployment
+        try {
+            const compressions = JSON.parse(localStorage.getItem('compressions') || '[]');
+            compressions.push({
+                ...data,
+                timestamp: new Date().toISOString()
             });
+            
+            // Keep only last 100 compressions to avoid storage issues
+            if (compressions.length > 100) {
+                compressions.splice(0, compressions.length - 100);
+            }
+            
+            localStorage.setItem('compressions', JSON.stringify(compressions));
+        } catch (error) {
+            console.warn('Failed to store compression data:', error);
         }
     }
 
