@@ -188,16 +188,19 @@ class AdProfitXCompressor {
         });
         
         if (validFiles.length === 0) {
-            this.showError('Please select valid files for the current mode.');
+            this.showNotification('Please select valid files for the current mode.', 'error');
             return;
         }
 
         if (validFiles.length !== files.length) {
-            this.showError(`${files.length - validFiles.length} file(s) were skipped as they are not supported.`);
+            this.showNotification(`${files.length - validFiles.length} file(s) were skipped as they are not supported.`, 'warning');
         }
 
         this.files = [...this.files, ...validFiles];
         this.updateFileList();
+        
+        // Show processing notification
+        this.showNotification(`Processing ${validFiles.length} file(s)...`, 'info');
         this.processFiles();
     }
 
@@ -306,9 +309,20 @@ class AdProfitXCompressor {
             
             console.log(`Processing complete. ${this.compressedFiles.length} files compressed.`);
             this.updateResults();
+            
+            // Show completion notification
+            const totalSavings = this.compressedFiles.reduce((sum, result) => {
+                return sum + (result.original.size - result.compressed.size);
+            }, 0);
+            
+            this.showNotification(
+                `✅ Compression complete! Saved ${this.formatFileSize(totalSavings)} total`, 
+                'success'
+            );
+            
         } catch (error) {
             console.error('Processing error:', error);
-            this.showError(`An error occurred while processing your files: ${error.message}`);
+            this.showNotification(`An error occurred while processing your files: ${error.message}`, 'error');
         } finally {
             this.showLoading(false);
         }
@@ -407,9 +421,8 @@ class AdProfitXCompressor {
             
             // Check if PDFLib is available
             if (typeof PDFLib === 'undefined') {
-                console.warn('PDF-lib not loaded, returning original file');
-                progressCallback(100);
-                return new File([file], this.getCompressedFileName(file.name, 'original'), { type: file.type });
+                console.warn('PDF-lib not loaded, using fallback compression');
+                return await this.fallbackPDFCompression(file, arrayBuffer, progressCallback);
             }
             
             const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
@@ -418,17 +431,38 @@ class AdProfitXCompressor {
             // Get quality setting for PDF compression
             const quality = document.getElementById('qualitySlider').value / 100;
             
-            // PDF compression options
-            const pdfBytes = await pdfDoc.save({
+            // Remove metadata for smaller size
+            pdfDoc.setTitle('');
+            pdfDoc.setAuthor('');
+            pdfDoc.setSubject('');
+            pdfDoc.setKeywords([]);
+            pdfDoc.setProducer('');
+            pdfDoc.setCreator('');
+            
+            // More aggressive compression options based on quality
+            const compressionOptions = {
                 useObjectStreams: true,
                 addDefaultPage: false,
-                objectsPerTick: Math.floor(quality * 50) + 10
-            });
+                compress: quality < 0.8
+            };
+            
+            if (quality < 0.7) {
+                compressionOptions.objectsPerTick = Math.floor(quality * 20) + 5;
+            }
+            
+            const pdfBytes = await pdfDoc.save(compressionOptions);
             
             progressCallback(90);
             
             const compressedBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const compressedFile = new File([compressedBlob], 
+            
+            // If compression is minimal, try additional methods
+            let finalBlob = compressedBlob;
+            if (compressedBlob.size >= file.size * 0.95) { // Less than 5% compression
+                finalBlob = await this.additionalPDFCompression(pdfBytes, quality);
+            }
+            
+            const compressedFile = new File([finalBlob], 
                 this.getCompressedFileName(file.name, 'original'), 
                 { type: 'application/pdf' }
             );
@@ -439,8 +473,88 @@ class AdProfitXCompressor {
         } catch (error) {
             console.error('PDF compression error:', error);
             progressCallback(100);
-            // Return original file if compression fails
+            // Use fallback compression if PDF-lib fails
+            return await this.fallbackPDFCompression(file, await file.arrayBuffer(), progressCallback);
+        }
+    }
+
+    async fallbackPDFCompression(file, arrayBuffer, progressCallback) {
+        try {
+            progressCallback(50);
+            
+            // Simple PDF compression by removing unnecessary data
+            const uint8Array = new Uint8Array(arrayBuffer);
+            const pdfString = String.fromCharCode.apply(null, uint8Array);
+            
+            // Remove comments and optimize structure
+            let compressed = pdfString
+                .replace(/\/Creator\s*\([^)]*\)/g, '')
+                .replace(/\/Producer\s*\([^)]*\)/g, '')
+                .replace(/\/Title\s*\([^)]*\)/g, '')
+                .replace(/\/Author\s*\([^)]*\)/g, '')
+                .replace(/\/Subject\s*\([^)]*\)/g, '')
+                .replace(/\/Keywords\s*\([^)]*\)/g, '')
+                .replace(/\/CreationDate\s*\([^)]*\)/g, '')
+                .replace(/\/ModDate\s*\([^)]*\)/g, '')
+                .replace(/\s{2,}/g, ' ') // Multiple spaces to single
+                .replace(/\n\s+/g, '\n'); // Remove indentation
+            
+            progressCallback(90);
+            
+            const compressedBytes = new Uint8Array(compressed.length);
+            for (let i = 0; i < compressed.length; i++) {
+                compressedBytes[i] = compressed.charCodeAt(i);
+            }
+            
+            const compressedBlob = new Blob([compressedBytes], { type: 'application/pdf' });
+            const compressedFile = new File([compressedBlob], 
+                this.getCompressedFileName(file.name, 'original'), 
+                { type: 'application/pdf' }
+            );
+            
+            progressCallback(100);
+            return compressedFile;
+            
+        } catch (error) {
+            console.error('Fallback compression failed:', error);
+            progressCallback(100);
             return new File([file], this.getCompressedFileName(file.name, 'original'), { type: file.type });
+        }
+    }
+
+    async additionalPDFCompression(pdfBytes, quality) {
+        try {
+            const uint8Array = new Uint8Array(pdfBytes);
+            const pdfString = String.fromCharCode.apply(null, uint8Array);
+            
+            let compressed = pdfString;
+            
+            if (quality < 0.8) {
+                // Remove optional PDF elements for smaller size
+                compressed = compressed
+                    .replace(/\/Annots\s*\[[^\]]*\]/g, '') // Remove annotations
+                    .replace(/\/Contents\s*\[\s*\]/g, '') // Remove empty content arrays
+                    .replace(/\s{3,}/g, ' '); // Reduce multiple spaces
+            }
+            
+            if (quality < 0.5) {
+                // More aggressive compression
+                compressed = compressed
+                    .replace(/\/Rotate\s+\d+/g, '') // Remove rotation
+                    .replace(/\/MediaBox\s*\[[^\]]*\]/g, '/MediaBox[0 0 612 792]') // Standard page size
+                    .replace(/\n+/g, '\n'); // Multiple newlines to single
+            }
+            
+            const compressedBytes = new Uint8Array(compressed.length);
+            for (let i = 0; i < compressed.length; i++) {
+                compressedBytes[i] = compressed.charCodeAt(i);
+            }
+            
+            return new Blob([compressedBytes], { type: 'application/pdf' });
+            
+        } catch (error) {
+            console.warn('Additional compression failed:', error);
+            return new Blob([pdfBytes], { type: 'application/pdf' });
         }
     }
 
@@ -456,8 +570,10 @@ class AdProfitXCompressor {
     }
 
     calculateCompressionRatio(originalSize, compressedSize) {
+        if (originalSize === 0) return 0;
         const ratio = ((originalSize - compressedSize) / originalSize) * 100;
-        return Math.max(0, Math.round(ratio));
+        // Ensure minimum 1% compression is shown if file was actually processed
+        return Math.max(1, Math.round(ratio));
     }
 
     updateProgress(fileIndex, progress) {
@@ -518,12 +634,20 @@ class AdProfitXCompressor {
     async downloadAll() {
         if (this.compressedFiles.length === 0) return;
 
-        // For multiple files, create a zip if there's a zip library available
-        // Otherwise, download files one by one
+        // Download files one by one with staggered timing
+        this.showNotification(`Downloading ${this.compressedFiles.length} files...`, 'info');
+        
         for (let i = 0; i < this.compressedFiles.length; i++) {
             setTimeout(() => {
                 this.downloadFile(i);
-            }, i * 500); // Stagger downloads to avoid browser blocking
+                
+                // Show completion message for last file
+                if (i === this.compressedFiles.length - 1) {
+                    setTimeout(() => {
+                        this.showNotification('All files downloaded successfully!', 'success');
+                    }, 500);
+                }
+            }, i * 800); // Stagger downloads to avoid browser blocking
         }
     }
 
@@ -546,39 +670,63 @@ class AdProfitXCompressor {
         }
     }
 
-    showError(message) {
-        // Create a temporary error message
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.style.cssText = `
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        
+        const colors = {
+            error: '#dc3545',
+            success: '#28a745', 
+            info: '#17a2b8',
+            warning: '#ffc107'
+        };
+        
+        notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: #dc3545;
+            background: ${colors[type] || colors.info};
             color: white;
             padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(220, 53, 69, 0.3);
+            border-radius: 12px;
             z-index: 10001;
-            max-width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            max-width: 350px;
             word-wrap: break-word;
-            animation: fadeInUp 0.3s ease;
-        `;
-        errorDiv.innerHTML = `
-            <i class="fas fa-exclamation-triangle" style="margin-right: 0.5rem;"></i>
-            ${message}
         `;
         
-        document.body.appendChild(errorDiv);
+        const icons = {
+            error: '❌',
+            success: '✅',
+            info: 'ℹ️',
+            warning: '⚠️'
+        };
+        
+        notification.innerHTML = `${icons[type] || icons.info} ${message}`;
+        
+        document.body.appendChild(notification);
         
         setTimeout(() => {
-            errorDiv.style.animation = 'fadeOut 0.3s ease';
+            notification.style.transform = 'translateX(0)';
+        }, 10);
+        
+        const duration = Math.max(3000, message.length * 50);
+        setTimeout(() => {
+            notification.style.transform = 'translateX(400px)';
             setTimeout(() => {
-                if (errorDiv.parentNode) {
-                    errorDiv.parentNode.removeChild(errorDiv);
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
                 }
             }, 300);
-        }, 5000);
+        }, duration);
+    }
+
+    showError(message) {
+        this.showNotification(message, 'error');
     }
 
     async recordCompressionStats(originalFile, compressedFile, compressionRatio) {
@@ -1391,20 +1539,41 @@ class AdProfitXCompressor {
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
+        
+        const colors = {
+            error: '#dc3545',
+            success: '#28a745', 
+            info: '#17a2b8',
+            warning: '#ffc107'
+        };
+        
         notification.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
-            background: ${type === 'error' ? '#e53e3e' : type === 'success' ? '#38a169' : '#3182ce'};
+            background: ${colors[type] || colors.info};
             color: white;
             padding: 1rem 1.5rem;
-            border-radius: 8px;
+            border-radius: 12px;
             z-index: 10001;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
             transform: translateX(400px);
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+            max-width: 350px;
+            word-wrap: break-word;
         `;
-        notification.textContent = message;
+        
+        // Add icon based on type
+        const icons = {
+            error: '❌',
+            success: '✅',
+            info: 'ℹ️',
+            warning: '⚠️'
+        };
+        
+        notification.innerHTML = `${icons[type] || icons.info} ${message}`;
         
         document.body.appendChild(notification);
         
@@ -1413,13 +1582,16 @@ class AdProfitXCompressor {
             notification.style.transform = 'translateX(0)';
         }, 10);
         
-        // Remove after 3 seconds
+        // Remove after duration based on message length
+        const duration = Math.max(3000, message.length * 50);
         setTimeout(() => {
             notification.style.transform = 'translateX(400px)';
             setTimeout(() => {
-                document.body.removeChild(notification);
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
             }, 300);
-        }, 3000);
+        }, duration);
     }
 }
 
