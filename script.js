@@ -709,3 +709,597 @@ const loadHeavyFeatures = () => {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = AdProfitXCompressor;
 }
+// AdProfitX Compressor - Complete JavaScript Implementation
+
+class AdProfitXCompressor {
+    constructor() {
+        this.currentFiles = [];
+        this.compressedFiles = [];
+        this.currentTab = 'image';
+        this.init();
+    }
+
+    init() {
+        this.setupEventListeners();
+        this.setupDragAndDrop();
+        this.setupAdvancedOptions();
+        this.setupNavigation();
+    }
+
+    setupEventListeners() {
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.switchTab(e.target.dataset.type);
+            });
+        });
+
+        // File input
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', (e) => {
+                this.handleFiles(e.target.files);
+            });
+        }
+
+        // Browse button
+        const browseBtn = document.querySelector('.browse-btn');
+        if (browseBtn) {
+            browseBtn.addEventListener('click', () => {
+                fileInput?.click();
+            });
+        }
+
+        // Quality slider
+        const qualitySlider = document.getElementById('qualitySlider');
+        const qualityValue = document.getElementById('qualityValue');
+        if (qualitySlider && qualityValue) {
+            qualitySlider.addEventListener('input', (e) => {
+                qualityValue.textContent = `${e.target.value}%`;
+            });
+        }
+
+        // Resize toggle
+        const resizeToggle = document.getElementById('resizeToggle');
+        const resizeOptions = document.getElementById('resizeOptions');
+        if (resizeToggle && resizeOptions) {
+            resizeToggle.addEventListener('change', (e) => {
+                resizeOptions.style.display = e.target.checked ? 'block' : 'none';
+            });
+        }
+
+        // Download all button
+        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        if (downloadAllBtn) {
+            downloadAllBtn.addEventListener('click', () => {
+                this.downloadAllFiles();
+            });
+        }
+    }
+
+    setupDragAndDrop() {
+        const uploadArea = document.getElementById('uploadArea');
+        if (!uploadArea) return;
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, this.preventDefaults, false);
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.add('dragover');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, () => {
+                uploadArea.classList.remove('dragover');
+            }, false);
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            this.handleFiles(files);
+        }, false);
+    }
+
+    setupAdvancedOptions() {
+        const optionsToggle = document.getElementById('optionsToggle');
+        const optionsPanel = document.getElementById('optionsPanel');
+        
+        if (optionsToggle && optionsPanel) {
+            optionsToggle.addEventListener('click', () => {
+                const isOpen = optionsPanel.classList.contains('show');
+                optionsPanel.classList.toggle('show');
+                optionsToggle.classList.toggle('active');
+            });
+        }
+    }
+
+    setupNavigation() {
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+    }
+
+    preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    switchTab(type) {
+        this.currentTab = type;
+        
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-type="${type}"]`).classList.add('active');
+
+        // Update file input accept attribute
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            if (type === 'image') {
+                fileInput.accept = '.jpg,.jpeg,.png,.webp';
+            } else if (type === 'pdf') {
+                fileInput.accept = '.pdf';
+            }
+        }
+
+        // Update supported formats text
+        const supportedFormats = document.querySelector('.supported-formats small');
+        if (supportedFormats) {
+            if (type === 'image') {
+                supportedFormats.innerHTML = '✅ Supported formats: JPEG, PNG, WebP • Max size: 50MB per file';
+            } else if (type === 'pdf') {
+                supportedFormats.innerHTML = '✅ Supported formats: PDF • Max size: 50MB per file';
+            }
+        }
+
+        // Clear current files when switching tabs
+        this.currentFiles = [];
+        this.compressedFiles = [];
+        this.updateFileList();
+        this.updateResults();
+    }
+
+    async handleFiles(files) {
+        console.log('Handling files:', files);
+        
+        const validFiles = Array.from(files).filter(file => this.validateFile(file));
+        
+        if (validFiles.length === 0) {
+            this.showNotification('No valid files selected', 'error');
+            return;
+        }
+
+        this.currentFiles = validFiles;
+        this.updateFileList();
+        
+        console.log('Starting file processing...');
+        await this.processFiles();
+    }
+
+    validateFile(file) {
+        const maxSize = 50 * 1024 * 1024; // 50MB
+        
+        if (file.size > maxSize) {
+            this.showNotification(`File ${file.name} is too large (max 50MB)`, 'error');
+            return false;
+        }
+
+        if (this.currentTab === 'image') {
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                this.showNotification(`File ${file.name} is not a valid image format`, 'error');
+                return false;
+            }
+        } else if (this.currentTab === 'pdf') {
+            if (file.type !== 'application/pdf') {
+                this.showNotification(`File ${file.name} is not a valid PDF`, 'error');
+                return false;
+            }
+        }
+
+        console.log(`File ${file.name}: valid (type: ${file.type})`);
+        return true;
+    }
+
+    updateFileList() {
+        const fileList = document.getElementById('fileList');
+        if (!fileList) return;
+
+        if (this.currentFiles.length === 0) {
+            fileList.style.display = 'none';
+            return;
+        }
+
+        fileList.style.display = 'block';
+        fileList.innerHTML = '<h3>Selected Files</h3>';
+        
+        this.currentFiles.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <i class="fas ${this.getFileIcon(file.type)} file-icon"></i>
+                    <div>
+                        <div><strong>${file.name}</strong></div>
+                        <div class="file-size">${this.formatFileSize(file.size)}</div>
+                    </div>
+                </div>
+                <button class="action-btn danger" onclick="compressor.removeFile(${index})">
+                    <i class="fas fa-trash"></i>
+                    Remove
+                </button>
+            `;
+            fileList.appendChild(fileItem);
+        });
+    }
+
+    removeFile(index) {
+        this.currentFiles.splice(index, 1);
+        this.updateFileList();
+        
+        if (this.currentFiles.length === 0) {
+            this.compressedFiles = [];
+            this.updateResults();
+        }
+    }
+
+    async processFiles() {
+        if (this.currentFiles.length === 0) return;
+
+        this.showLoading(true);
+        this.compressedFiles = [];
+
+        try {
+            for (let i = 0; i < this.currentFiles.length; i++) {
+                const file = this.currentFiles[i];
+                console.log(`Processing file ${i + 1}/${this.currentFiles.length}: ${file.name}`);
+                
+                let compressedFile;
+                if (this.currentTab === 'image') {
+                    compressedFile = await this.compressImage(file);
+                } else if (this.currentTab === 'pdf') {
+                    compressedFile = await this.compressPDF(file);
+                }
+                
+                if (compressedFile) {
+                    this.compressedFiles.push(compressedFile);
+                }
+            }
+            
+            console.log(`Processing complete. ${this.compressedFiles.length} files compressed.`);
+            this.updateResults();
+            
+        } catch (error) {
+            console.error('Error processing files:', error);
+            this.showNotification('Error processing files', 'error');
+        } finally {
+            this.showLoading(false);
+        }
+    }
+
+    async compressImage(file) {
+        const quality = parseInt(document.getElementById('qualitySlider')?.value || 80) / 100;
+        const outputFormat = document.getElementById('formatSelect')?.value || 'original';
+        
+        return new Promise((resolve) => {
+            const img = new Image();
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            img.onload = () => {
+                // Handle resizing if enabled
+                let { width, height } = this.calculateDimensions(img.width, img.height);
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Draw and compress
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Determine output format
+                let mimeType = file.type;
+                let extension = this.getFileExtension(file.name);
+                
+                if (outputFormat !== 'original') {
+                    mimeType = `image/${outputFormat}`;
+                    extension = outputFormat === 'jpeg' ? 'jpg' : outputFormat;
+                }
+                
+                canvas.toBlob((blob) => {
+                    const compressionRatio = Math.round((1 - blob.size / file.size) * 100);
+                    
+                    console.log(`Compression complete. Original: ${file.size} bytes, Compressed: ${blob.size} bytes, Ratio: ${compressionRatio}%`);
+                    
+                    const newFileName = this.changeFileExtension(file.name, extension);
+                    const compressedFile = new File([blob], newFileName, { type: mimeType });
+                    
+                    // Record analytics
+                    this.recordCompression({
+                        fileName: file.name,
+                        fileType: 'image',
+                        originalSize: file.size,
+                        compressedSize: blob.size,
+                        compressionRatio: compressionRatio,
+                        quality: quality * 100,
+                        outputFormat: outputFormat,
+                        processingTime: Date.now()
+                    });
+                    
+                    resolve({
+                        original: file,
+                        compressed: compressedFile,
+                        compressionRatio: compressionRatio,
+                        originalSize: file.size,
+                        compressedSize: blob.size
+                    });
+                }, mimeType, quality);
+            };
+            
+            img.src = URL.createObjectURL(file);
+        });
+    }
+
+    async compressPDF(file) {
+        console.log('Compressing PDF...');
+        
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+            
+            // Basic PDF compression - remove metadata and optimize
+            pdfDoc.setTitle('');
+            pdfDoc.setAuthor('');
+            pdfDoc.setSubject('');
+            pdfDoc.setKeywords([]);
+            pdfDoc.setProducer('AdProfitX Compressor');
+            pdfDoc.setCreator('AdProfitX Compressor');
+            
+            const pdfBytes = await pdfDoc.save({
+                useObjectStreams: true,
+                addDefaultPage: false,
+                objectStreamsThreshold: 1,
+                updateFieldAppearances: false
+            });
+            
+            const compressedBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const compressionRatio = Math.round((1 - compressedBlob.size / file.size) * 100);
+            
+            console.log(`Compression complete. Original: ${file.size} bytes, Compressed: ${compressedBlob.size} bytes, Ratio: ${compressionRatio}%`);
+            
+            const compressedFile = new File([compressedBlob], file.name, { type: 'application/pdf' });
+            
+            // Record analytics
+            this.recordCompression({
+                fileName: file.name,
+                fileType: 'pdf',
+                originalSize: file.size,
+                compressedSize: compressedBlob.size,
+                compressionRatio: compressionRatio,
+                quality: 100,
+                outputFormat: 'pdf',
+                processingTime: Date.now()
+            });
+            
+            return {
+                original: file,
+                compressed: compressedFile,
+                compressionRatio: compressionRatio,
+                originalSize: file.size,
+                compressedSize: compressedBlob.size
+            };
+            
+        } catch (error) {
+            console.error('PDF compression error:', error);
+            this.showNotification(`Error compressing PDF: ${file.name}`, 'error');
+            return null;
+        }
+    }
+
+    calculateDimensions(originalWidth, originalHeight) {
+        const resizeToggle = document.getElementById('resizeToggle');
+        const widthInput = document.getElementById('widthInput');
+        const heightInput = document.getElementById('heightInput');
+        const aspectRatio = document.getElementById('aspectRatio');
+        
+        if (!resizeToggle?.checked) {
+            return { width: originalWidth, height: originalHeight };
+        }
+        
+        const targetWidth = parseInt(widthInput?.value) || originalWidth;
+        const targetHeight = parseInt(heightInput?.value) || originalHeight;
+        
+        if (aspectRatio?.checked) {
+            const ratio = originalWidth / originalHeight;
+            if (widthInput?.value && !heightInput?.value) {
+                return { width: targetWidth, height: Math.round(targetWidth / ratio) };
+            } else if (heightInput?.value && !widthInput?.value) {
+                return { width: Math.round(targetHeight * ratio), height: targetHeight };
+            }
+        }
+        
+        return { width: targetWidth, height: targetHeight };
+    }
+
+    updateResults() {
+        const resultsArea = document.getElementById('resultsArea');
+        const resultsGrid = document.getElementById('resultsGrid');
+        
+        if (!resultsArea || !resultsGrid) return;
+        
+        if (this.compressedFiles.length === 0) {
+            resultsArea.style.display = 'none';
+            return;
+        }
+        
+        resultsArea.style.display = 'block';
+        resultsGrid.innerHTML = '';
+        
+        this.compressedFiles.forEach((result, index) => {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = `
+                <div class="result-info">
+                    <i class="fas ${this.getFileIcon(result.compressed.type)} file-icon"></i>
+                    <div>
+                        <div><strong>${result.compressed.name}</strong></div>
+                        <div class="compression-stats">
+                            ${this.formatFileSize(result.originalSize)} → ${this.formatFileSize(result.compressedSize)}
+                            <span class="compression-ratio">${result.compressionRatio}% smaller</span>
+                        </div>
+                    </div>
+                </div>
+                <button class="download-btn" onclick="compressor.downloadFile(${index})">
+                    <i class="fas fa-download"></i>
+                    Download
+                </button>
+            `;
+            resultsGrid.appendChild(resultItem);
+        });
+    }
+
+    downloadFile(index) {
+        const result = this.compressedFiles[index];
+        if (!result) return;
+        
+        const url = URL.createObjectURL(result.compressed);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = result.compressed.name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    async downloadAllFiles() {
+        if (this.compressedFiles.length === 0) return;
+        
+        if (this.compressedFiles.length === 1) {
+            this.downloadFile(0);
+            return;
+        }
+        
+        // Create ZIP file for multiple downloads
+        this.showNotification('Preparing download...', 'info');
+        
+        // For simplicity, download files individually
+        for (let i = 0; i < this.compressedFiles.length; i++) {
+            setTimeout(() => this.downloadFile(i), i * 500);
+        }
+    }
+
+    recordCompression(data) {
+        // Send analytics data to server if available
+        if (typeof fetch !== 'undefined') {
+            fetch('/api/record-compression', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            }).catch(error => {
+                console.log('Analytics recording failed:', error);
+            });
+        }
+    }
+
+    // Utility functions
+    getFileIcon(mimeType) {
+        if (mimeType.startsWith('image/')) return 'fa-image';
+        if (mimeType === 'application/pdf') return 'fa-file-pdf';
+        return 'fa-file';
+    }
+
+    getFileExtension(filename) {
+        return filename.split('.').pop().toLowerCase();
+    }
+
+    changeFileExtension(filename, newExt) {
+        const parts = filename.split('.');
+        parts[parts.length - 1] = newExt;
+        return parts.join('.');
+    }
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    showLoading(show) {
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            if (show) {
+                overlay.classList.add('show');
+            } else {
+                overlay.classList.remove('show');
+            }
+        }
+    }
+
+    showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${type === 'error' ? '#e53e3e' : type === 'success' ? '#38a169' : '#3182ce'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            z-index: 10001;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        `;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 10);
+        
+        // Remove after 3 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(400px)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+}
+
+// Initialize the compressor when page loads
+let compressor;
+document.addEventListener('DOMContentLoaded', () => {
+    compressor = new AdProfitXCompressor();
+});
+
+// Export for global access
+window.compressor = compressor;
