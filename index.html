@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>AdProfitX Compressor - Free Image & PDF Compression Tool</title>
     
     <!-- SEO Meta Tags -->
@@ -35,6 +36,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Fallback font loading */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    </style>
     
     <!-- PDF-lib Library -->
     <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
@@ -43,6 +48,7 @@
     <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
     
     <!-- Enhanced Inline Styles for GitHub Pages -->
+    <link rel="stylesheet" href="styles.css">
     <style>
         /* Reset and Base Styles */
         * {
@@ -61,6 +67,9 @@
             color: #2d3748;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
         }
 
         /* Container */
@@ -102,3 +111,1261 @@
             margin-bottom: 1rem;
             color: #667eea;
             animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-spinner p {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: #667eea;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #2d3748;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* Main Layout */
+        .main {
+            padding: 3rem 0;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        /* Ad Columns */
+        .ad-column {
+            position: sticky;
+            top: 120px;
+        }
+
+        .ad-placeholder {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ad-label {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .ad-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #cbd5e0;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .ad-horizontal {
+            margin: 4rem 0;
+        }
+
+        .ad-horizontal .ad-placeholder {
+            min-height: 200px;
+            width: 100%;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 4rem 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23667eea" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title::after {
+            content: '✨';
+            margin-left: 1rem;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.4rem;
+            color: #4a5568;
+            margin-bottom: 3rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Compression Tool */
+        .compression-tool {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            margin-top: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Tool Tabs */
+        .tool-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: rgba(248, 250, 252, 0.8);
+            border: 2px solid rgba(226, 232, 240, 0.8);
+            padding: 1.2rem 2.5rem;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #4a5568;
+        }
+
+        .tab-btn:hover {
+            background: rgba(237, 242, 247, 0.9);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-btn i {
+            font-size: 1.2rem;
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 3px dashed #cbd5e0;
+            border-radius: 20px;
+            padding: 4rem 3rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(248, 250, 252, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.2);
+        }
+
+        .upload-area:hover::before,
+        .upload-area.dragover::before {
+            opacity: 1;
+        }
+
+        .upload-icon {
+            font-size: 5rem;
+            color: #cbd5e0;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-area:hover .upload-icon,
+        .upload-area.dragover .upload-icon {
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .upload-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.75rem;
+            color: #2d3748;
+            font-weight: 700;
+        }
+
+        .upload-content p {
+            color: #4a5568;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .browse-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .browse-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .browse-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .supported-formats {
+            margin-top: 1.5rem;
+            color: #718096;
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 3rem;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .features h2 {
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            color: #2d3748;
+            font-weight: 800;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card i {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.7;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* About Section */
+        .about {
+            padding: 5rem 3rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .about h2 {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2d3748;
+            font-weight: 800;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-content p {
+            font-size: 1.2rem;
+            color: #4a5568;
+            line-height: 1.8;
+            margin-bottom: 4rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-8px);
+        }
+
+        .stat-item h3 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .footer-section p {
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-section a {
+            color: #e2e8f0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+
+        .footer-section a:hover {
+            color: #667eea;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #4a5568;
+            padding-top: 2rem;
+            text-align: center;
+            color: #a0aec0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 250px 1fr 250px;
+                gap: 1.5rem;
+            }
+            
+            .ad-placeholder {
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .ad-column {
+                position: static;
+                order: 2;
+            }
+            
+            .ad-left {
+                order: 0;
+            }
+            
+            .main-content {
+                order: 1;
+            }
+            
+            .ad-right {
+                order: 3;
+            }
+            
+            .ad-placeholder {
+                min-height: 150px;
+            }
+            
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .features h2,
+            .about h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .nav {
+                gap: 1.5rem;
+            }
+            
+            .hero {
+                padding: 3rem 2rem;
+            }
+            
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .compression-tool {
+                padding: 2rem;
+            }
+            
+            .tool-tabs {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .tab-btn {
+                padding: 1rem 2rem;
+            }
+            
+            .upload-area {
+                padding: 3rem 2rem;
+            }
+            
+            .upload-icon {
+                font-size: 4rem;
+            }
+            
+            .upload-content h3 {
+                font-size: 1.5rem;
+            }
+            
+            .features,
+            .about {
+                padding: 4rem 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .feature-card {
+                padding: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+            
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            
+            .stat-item h3 {
+                font-size: 2.2rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+            
+            .compression-tool {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Advanced Options Styles */
+        .advanced-options {
+            margin-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 2rem;
+        }
+
+        .options-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .options-toggle:hover {
+            color: #5a67d8;
+        }
+
+        .options-toggle i:last-child {
+            transition: transform 0.3s ease;
+        }
+
+        .options-toggle.active i:last-child {
+            transform: rotate(180deg);
+        }
+
+        .options-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .options-panel.show {
+            max-height: 500px;
+        }
+
+        .option-group {
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option-group label {
+            font-weight: 600;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+            transition: background 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .select-input {
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            transition: border-color 0.3s ease;
+        }
+
+        .select-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* File List and Results Styles */
+        .file-list,
+        .results-area {
+            margin-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 2rem;
+        }
+
+        .file-item,
+        .result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border: 2px solid #f7fafc;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            background: #f7fafc;
+            transition: all 0.3s ease;
+        }
+
+        .file-item:hover,
+        .result-item:hover {
+            background: #edf2f7;
+            border-color: #e2e8f0;
+        }
+
+        .file-info,
+        .result-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .download-btn,
+        .action-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover,
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+        }
+
+        .download-all-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1.25rem 3rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .download-all-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+    </style>
+    
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "AdProfitX Compressor",
+        "description": "Free online image and PDF compression tool",
+        "url": "",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "Image Compression",
+            "PDF Compression",
+            "Batch Processing",
+            "Multiple Format Support"
+        ]
+    }
+    </script>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Processing your file...</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                    <h1>AdProfitX Compressor</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#about" class="nav-link">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="content-grid">
+                <!-- Left Ad Column -->
+                <aside class="ad-column ad-left">
+                    <div class="ad-placeholder">
+                        <!-- Google AdSense Ad Unit 1 - To be added manually -->
+                        <p class="ad-label">Advertisement</p>
+                        <div class="ad-content">
+                            💰 Ad Space Available
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <section class="main-content" id="home">
+                    <!-- Hero Section -->
+                    <div class="hero">
+                        <h2 class="hero-title">Free Image & PDF Compression Tool</h2>
+                        <p class="hero-subtitle">Reduce file sizes while maintaining quality. Support for JPEG, PNG, WebP, and PDF formats with advanced optimization algorithms.</p>
+                        
+                        <!-- Compression Tool -->
+                        <div class="compression-tool">
+                            <!-- File Type Selector -->
+                            <div class="tool-tabs">
+                                <button class="tab-btn active" data-type="image">
+                                    <i class="fas fa-image"></i>
+                                    Image Compression
+                                </button>
+                                <button class="tab-btn" data-type="pdf">
+                                    <i class="fas fa-file-pdf"></i>
+                                    PDF Compression
+                                </button>
+                            </div>
+
+                            <!-- Upload Area -->
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-content">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <h3>Drag & Drop Files Here</h3>
+                                    <p>or click to browse files from your device</p>
+                                    <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.webp,.pdf" hidden>
+                                    <button class="browse-btn" onclick="document.getElementById('fileInput').click()">
+                                        <i class="fas fa-folder-open"></i>
+                                        Browse Files
+                                    </button>
+                                    <div class="supported-formats">
+                                        <small>✅ Supported formats: JPEG, PNG, WebP, PDF • Max size: 50MB per file</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Advanced Options -->
+                            <div class="advanced-options">
+                                <button class="options-toggle" id="optionsToggle">
+                                    <i class="fas fa-cog"></i>
+                                    Advanced Options
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="options-panel" id="optionsPanel">
+                                    <div class="option-group">
+                                        <label for="qualitySlider">Quality Level:</label>
+                                        <input type="range" id="qualitySlider" min="10" max="100" value="80" class="slider">
+                                        <span id="qualityValue">80%</span>
+                                    </div>
+                                    <div class="option-group">
+                                        <label for="formatSelect">Output Format:</label>
+                                        <select id="formatSelect" class="select-input">
+                                            <option value="original">Keep Original</option>
+                                            <option value="jpeg">JPEG</option>
+                                            <option value="png">PNG</option>
+                                            <option value="webp">WebP</option>
+                                        </select>
+                                    </div>
+                                    <div class="option-group">
+                                        <label for="resizeToggle">
+                                            <input type="checkbox" id="resizeToggle">
+                                            Resize Images
+                                        </label>
+                                        <div class="resize-options" id="resizeOptions" style="display: none;">
+                                            <input type="number" id="widthInput" placeholder="Width" min="1">
+                                            <span>×</span>
+                                            <input type="number" id="heightInput" placeholder="Height" min="1">
+                                            <label>
+                                                <input type="checkbox" id="aspectRatio" checked>
+                                                Maintain aspect ratio
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- File List -->
+                            <div class="file-list" id="fileList" style="display: none;"></div>
+
+                            <!-- Compression Results -->
+                            <div class="results-area" id="resultsArea" style="display: none;">
+                                <h3>Compression Results</h3>
+                                <div class="results-grid" id="resultsGrid"></div>
+                                <button class="download-all-btn" id="downloadAllBtn">
+                                    <i class="fas fa-download"></i>
+                                    Download All Compressed Files
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Section -->
+                    <section id="features" class="features">
+                        <h2>Why Choose AdProfitX Compressor? 🚀</h2>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-shield-alt"></i>
+                                <h3>100% Secure & Private</h3>
+                                <p>All processing happens locally in your browser. Your files never leave your device, ensuring complete privacy and security.</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-rocket"></i>
+                                <h3>Lightning Fast Processing</h3>
+                                <p>Advanced algorithms ensure quick compression without compromising quality. Get results in seconds, not minutes.</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-mobile-alt"></i>
+                                <h3>Mobile Friendly Design</h3>
+                                <p>Works perfectly on all devices - desktop, tablet, and mobile. Responsive design for optimal user experience.</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-layer-group"></i>
+                                <h3>Batch Processing Power</h3>
+                                <p>Compress multiple files at once to save time and effort. Handle entire folders with ease.</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-sliders-h"></i>
+                                <h3>Advanced Customization</h3>
+                                <p>Fine-tune compression settings, resize options, and output formats for optimal results tailored to your needs.</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-heart"></i>
+                                <h3>Completely Free Forever</h3>
+                                <p>No registration, no limits, no watermarks, no hidden fees. Just pure compression power, completely free.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Middle Ad -->
+                    <div class="ad-horizontal">
+                        <div class="ad-placeholder">
+                            <!-- Google AdSense Ad Unit 2 - To be added manually -->
+                            <p class="ad-label">Advertisement</p>
+                            <div class="ad-content">
+                                📊 Premium Ad Placement Available
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- About Section -->
+                    <section id="about" class="about">
+                        <h2>About AdProfitX Compressor 💼</h2>
+                        <div class="about-content">
+                            <p>AdProfitX Compressor is a professional-grade online compression tool designed to help you reduce file sizes without sacrificing quality. Whether you're optimizing images for web use, compressing PDFs for easier sharing, or preparing files for upload, our advanced algorithms ensure the best possible results every time.</p>
+                            
+                            <div class="stats-grid">
+                                <div class="stat-item">
+                                    <h3>50M+</h3>
+                                    <p>Files Compressed</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h3>99.9%</h3>
+                                    <p>Uptime Guarantee</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h3>4.9/5</h3>
+                                    <p>User Rating</p>
+                                </div>
+                                <div class="stat-item">
+                                    <h3>24/7</h3>
+                                    <p>Always Available</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+                <!-- Right Ad Column -->
+                <aside class="ad-column ad-right">
+                    <div class="ad-placeholder">
+                        <!-- Google AdSense Ad Unit 3 - To be added manually -->
+                        <p class="ad-label">Advertisement</p>
+                        <div class="ad-content">
+                            🎯 Targeted Ad Space
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>AdProfitX Compressor</h4>
+                    <p>Professional image and PDF compression tool. Fast, secure, and completely free. Join millions of users who trust our platform for their compression needs.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li><a href="#features">Image Compression</a></li>
+                        <li><a href="#features">PDF Compression</a></li>
+                        <li><a href="#features">Batch Processing</a></li>
+                        <li><a href="#features">Advanced Options</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect With Us</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 AdProfitX Compressor. All rights reserved. Built with ❤️ for the community.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Ensure DOM is ready before initializing
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeApp);
+        } else {
+            initializeApp();
+        }
+        
+        function initializeApp() {
+            // Check if script.js is loaded, if not load it
+            if (typeof AdProfitXCompressor === 'undefined') {
+                const script = document.createElement('script');
+                script.src = './script.js';
+                script.onload = function() {
+                    console.log('Script loaded successfully');
+                };
+                script.onerror = function() {
+                    console.error('Failed to load script.js');
+                };
+                document.head.appendChild(script);
+            }
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
