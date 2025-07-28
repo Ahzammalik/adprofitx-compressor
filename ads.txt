@@ -5,8 +5,8 @@
 # Format: domain.com, publisher-id, relationship-type, certification-authority-id
 # Example: google.com, pub-4313544696010088, DIRECT, f08c47fec0942fa0
 
-# Google AdSense - pub-4313544696010088
-# google.com, pub-4313544696010088, DIRECT, f08c47fec0942fa0
+# Google AdSense - Your publisher ID
+google.com, pub-4313544696010088, DIRECT, f08c47fec0942fa0
 
 # Instructions for manual setup:
 # 1. Replace 'pub-XXXXXXXXXXXXXXXXX' with your actual Google AdSense publisher ID
