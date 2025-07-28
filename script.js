@@ -881,15 +881,30 @@ class AdProfitXCompressor {
         const fileInput = document.getElementById('fileInput');
         if (fileInput) {
             fileInput.addEventListener('change', (e) => {
+                console.log('File input changed:', e.target.files);
                 this.handleFiles(e.target.files);
             });
         }
 
-        // Browse button
+        // Browse button - both click handlers
         const browseBtn = document.querySelector('.browse-btn');
         if (browseBtn) {
-            browseBtn.addEventListener('click', () => {
+            browseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Browse button clicked');
                 fileInput?.click();
+            });
+        }
+
+        // Upload area click handler
+        const uploadArea = document.getElementById('uploadArea');
+        if (uploadArea) {
+            uploadArea.addEventListener('click', (e) => {
+                if (!e.target.closest('.browse-btn')) {
+                    console.log('Upload area clicked');
+                    fileInput?.click();
+                }
             });
         }
 
@@ -941,6 +956,7 @@ class AdProfitXCompressor {
         });
 
         uploadArea.addEventListener('drop', (e) => {
+            console.log('Files dropped:', e.dataTransfer.files);
             const files = e.dataTransfer.files;
             this.handleFiles(files);
         }, false);
@@ -999,9 +1015,9 @@ class AdProfitXCompressor {
         const fileInput = document.getElementById('fileInput');
         if (fileInput) {
             if (type === 'image') {
-                fileInput.accept = '.jpg,.jpeg,.png,.webp';
+                fileInput.accept = 'image/jpeg,image/jpg,image/png,image/webp,.jpg,.jpeg,.png,.webp';
             } else if (type === 'pdf') {
-                fileInput.accept = '.pdf';
+                fileInput.accept = 'application/pdf,.pdf';
             }
         }
 
@@ -1009,9 +1025,9 @@ class AdProfitXCompressor {
         const supportedFormats = document.querySelector('.supported-formats small');
         if (supportedFormats) {
             if (type === 'image') {
-                supportedFormats.innerHTML = '✅ Supported formats: JPEG, PNG, WebP • Max size: 50MB per file';
+                supportedFormats.innerHTML = '✅ Supported formats: JPEG, PNG, WebP • Max size: 100MB per file';
             } else if (type === 'pdf') {
-                supportedFormats.innerHTML = '✅ Supported formats: PDF • Max size: 50MB per file';
+                supportedFormats.innerHTML = '✅ Supported formats: PDF • Max size: 100MB per file';
             }
         }
 
@@ -1025,25 +1041,35 @@ class AdProfitXCompressor {
     async handleFiles(files) {
         console.log('Handling files:', files);
         
+        if (!files || files.length === 0) {
+            this.showNotification('No files selected', 'warning');
+            return;
+        }
+        
         const validFiles = Array.from(files).filter(file => this.validateFile(file));
         
         if (validFiles.length === 0) {
-            this.showNotification('No valid files selected', 'error');
+            this.showNotification('No valid files selected for the current tab', 'error');
             return;
+        }
+
+        if (validFiles.length !== files.length) {
+            this.showNotification(`${files.length - validFiles.length} file(s) were skipped (invalid format or too large)`, 'warning');
         }
 
         this.currentFiles = validFiles;
         this.updateFileList();
         
         console.log('Starting file processing...');
+        this.showNotification(`Processing ${validFiles.length} file(s)...`, 'info');
         await this.processFiles();
     }
 
     validateFile(file) {
-        const maxSize = 50 * 1024 * 1024; // 50MB
+        const maxSize = 100 * 1024 * 1024; // 100MB
         
         if (file.size > maxSize) {
-            this.showNotification(`File ${file.name} is too large (max 50MB)`, 'error');
+            this.showNotification(`File ${file.name} is too large (max 100MB)`, 'error');
             return false;
         }
 
