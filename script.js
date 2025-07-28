@@ -1,3 +1,4 @@
+
 // AdProfitX Compressor - Fixed JavaScript Implementation
 class AdProfitXCompressor {
     constructor() {
@@ -21,7 +22,8 @@ class AdProfitXCompressor {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const type = e.target.closest('.tab-btn').dataset.type;
+                e.stopPropagation();
+                const type = btn.getAttribute('data-type');
                 console.log('Tab clicked:', type);
                 this.switchTab(type);
             });
@@ -81,7 +83,10 @@ class AdProfitXCompressor {
 
     setupDragAndDrop() {
         const uploadArea = document.getElementById('uploadArea');
-        if (!uploadArea) return;
+        if (!uploadArea) {
+            console.error('Upload area not found');
+            return;
+        }
 
         console.log('Setting up drag and drop...');
 
@@ -121,8 +126,9 @@ class AdProfitXCompressor {
             }
         }, false);
 
-        // Click to upload
+        // Click to upload (but not on browse button)
         uploadArea.addEventListener('click', (e) => {
+            // Don't trigger file input if clicking on browse button
             if (!e.target.closest('.browse-btn')) {
                 console.log('Upload area clicked');
                 const fileInput = document.getElementById('fileInput');
@@ -138,7 +144,8 @@ class AdProfitXCompressor {
         const optionsPanel = document.getElementById('optionsPanel');
 
         if (optionsToggle && optionsPanel) {
-            optionsToggle.addEventListener('click', () => {
+            optionsToggle.addEventListener('click', (e) => {
+                e.preventDefault();
                 const isOpen = optionsPanel.classList.contains('show');
                 optionsPanel.classList.toggle('show');
                 optionsToggle.classList.toggle('active');
@@ -177,9 +184,13 @@ class AdProfitXCompressor {
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
+        
         const activeBtn = document.querySelector(`[data-type="${type}"]`);
         if (activeBtn) {
             activeBtn.classList.add('active');
+            console.log('Tab button activated:', type);
+        } else {
+            console.error('Tab button not found for type:', type);
         }
 
         // Update file input accept attribute
@@ -270,11 +281,11 @@ class AdProfitXCompressor {
         if (this.currentTab === 'image') {
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
             const isValid = validTypes.includes(file.type);
-            console.log(`Image file ${file.name} validation: ${isValid} (type: ${file.type})`);
+            console.log(`File ${file.name}: ${isValid ? 'valid' : 'invalid'} (type: ${file.type})`);
             return isValid;
         } else if (this.currentTab === 'pdf') {
             const isValid = file.type === 'application/pdf';
-            console.log(`PDF file ${file.name} validation: ${isValid} (type: ${file.type})`);
+            console.log(`File ${file.name}: ${isValid ? 'valid' : 'invalid'} (type: ${file.type})`);
             return isValid;
         }
 
@@ -326,6 +337,7 @@ class AdProfitXCompressor {
     async processFiles() {
         if (this.currentFiles.length === 0) return;
 
+        console.log('Starting file processing...');
         this.showLoading(true);
         this.compressedFiles = [];
 
@@ -372,6 +384,8 @@ class AdProfitXCompressor {
         const quality = parseInt(document.getElementById('qualitySlider')?.value || 80) / 100;
         const outputFormat = document.getElementById('formatSelect')?.value || 'original';
 
+        console.log('Compressing image...');
+        
         return new Promise((resolve) => {
             const img = new Image();
             const canvas = document.createElement('canvas');
@@ -413,7 +427,7 @@ class AdProfitXCompressor {
                             const compressionRatio = Math.round((1 - blob.size / file.size) * 100);
                             const adjustedRatio = Math.max(compressionRatio, 5); // Ensure minimum 5% shown
 
-                            console.log(`Image compression complete. Original: ${file.size} bytes, Compressed: ${blob.size} bytes, Ratio: ${adjustedRatio}%`);
+                            console.log(`Compression complete. Original: ${file.size} bytes, Compressed: ${blob.size} bytes, Ratio: ${adjustedRatio}%`);
 
                             const newFileName = this.changeFileExtension(file.name, extension, '_compressed');
                             const compressedFile = new File([blob], newFileName, { type: mimeType });
@@ -446,7 +460,7 @@ class AdProfitXCompressor {
     }
 
     async compressPDF(file) {
-        console.log('Starting PDF compression...');
+        console.log('Compressing PDF...');
 
         try {
             // Check if PDF-lib is available
@@ -497,7 +511,7 @@ class AdProfitXCompressor {
             // Ensure minimum compression shown
             compressionRatio = Math.max(compressionRatio, 8);
 
-            console.log(`PDF compression complete. Original: ${file.size} bytes, Compressed: ${finalBytes.length} bytes, Ratio: ${compressionRatio}%`);
+            console.log(`Compression complete. Original: ${file.size} bytes, Compressed: ${finalBytes.length} bytes, Ratio: ${compressionRatio}%`);
 
             const compressedBlob = new Blob([finalBytes], { type: 'application/pdf' });
             const compressedFile = new File([compressedBlob], this.addSuffixToFileName(file.name, '_compressed'), { type: 'application/pdf' });
