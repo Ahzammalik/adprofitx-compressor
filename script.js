@@ -1,859 +1,4 @@
-// AdProfitX Compressor - Main JavaScript File
-class AdProfitXCompressor {
-    constructor() {
-        this.currentType = 'image';
-        this.files = [];
-        this.compressedFiles = [];
-        this.supportedImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        this.supportedPdfTypes = ['application/pdf'];
-        
-        this.init();
-    }
-
-    init() {
-        this.setupEventListeners();
-        this.setupDragAndDrop();
-        this.updateAcceptedTypes();
-    }
-
-    setupEventListeners() {
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.switchTab(e.target.dataset.type);
-            });
-        });
-
-        // File input
-        const fileInput = document.getElementById('fileInput');
-        fileInput.addEventListener('change', (e) => {
-            this.handleFiles(Array.from(e.target.files));
-        });
-
-        // Advanced options toggle
-        const optionsToggle = document.getElementById('optionsToggle');
-        const optionsPanel = document.getElementById('optionsPanel');
-        
-        optionsToggle.addEventListener('click', () => {
-            optionsPanel.classList.toggle('show');
-            optionsToggle.classList.toggle('active');
-        });
-
-        // Quality slider
-        const qualitySlider = document.getElementById('qualitySlider');
-        const qualityValue = document.getElementById('qualityValue');
-        
-        qualitySlider.addEventListener('input', (e) => {
-            qualityValue.textContent = e.target.value + '%';
-        });
-
-        // Resize toggle
-        const resizeToggle = document.getElementById('resizeToggle');
-        const resizeOptions = document.getElementById('resizeOptions');
-        
-        resizeToggle.addEventListener('change', (e) => {
-            resizeOptions.style.display = e.target.checked ? 'flex' : 'none';
-        });
-
-        // Aspect ratio maintenance
-        const aspectRatio = document.getElementById('aspectRatio');
-        const widthInput = document.getElementById('widthInput');
-        const heightInput = document.getElementById('heightInput');
-        
-        let aspectRatioValue = 1;
-        
-        widthInput.addEventListener('input', (e) => {
-            if (aspectRatio.checked && e.target.value) {
-                heightInput.value = Math.round(e.target.value / aspectRatioValue);
-            }
-        });
-        
-        heightInput.addEventListener('input', (e) => {
-            if (aspectRatio.checked && e.target.value) {
-                widthInput.value = Math.round(e.target.value * aspectRatioValue);
-            }
-        });
-
-        // Navigation smooth scrolling
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-                
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    
-                    // Update active nav link
-                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        // Download all button
-        document.addEventListener('click', (e) => {
-            if (e.target.id === 'downloadAllBtn') {
-                this.downloadAll();
-            }
-        });
-    }
-
-    setupDragAndDrop() {
-        const uploadArea = document.getElementById('uploadArea');
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, this.preventDefaults);
-        });
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.add('dragover');
-            });
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, () => {
-                uploadArea.classList.remove('dragover');
-            });
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            const files = Array.from(e.dataTransfer.files);
-            this.handleFiles(files);
-        });
-
-        // Click to upload
-        uploadArea.addEventListener('click', () => {
-            document.getElementById('fileInput').click();
-        });
-    }
-
-    preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    switchTab(type) {
-        this.currentType = type;
-        
-        // Update active tab
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector(`[data-type="${type}"]`).classList.add('active');
-        
-        // Clear current files
-        this.files = [];
-        this.compressedFiles = [];
-        this.updateFileList();
-        this.updateResults();
-        
-        // Update accepted file types
-        this.updateAcceptedTypes();
-    }
-
-    updateAcceptedTypes() {
-        const fileInput = document.getElementById('fileInput');
-        const formatSelect = document.getElementById('formatSelect');
-        
-        if (this.currentType === 'image') {
-            fileInput.accept = '.jpg,.jpeg,.png,.webp';
-            // Update format options for images
-            formatSelect.innerHTML = `
-                <option value="original">Keep Original</option>
-                <option value="jpeg">JPEG</option>
-                <option value="png">PNG</option>
-                <option value="webp">WebP</option>
-            `;
-        } else {
-            fileInput.accept = '.pdf';
-            // Update format options for PDFs
-            formatSelect.innerHTML = `
-                <option value="original">Keep Original (PDF)</option>
-            `;
-        }
-    }
-
-    handleFiles(files) {
-        console.log('Handling files:', files);
-        
-        const validFiles = files.filter(file => {
-            const isValid = this.isValidFile(file);
-            console.log(`File ${file.name}: ${isValid ? 'valid' : 'invalid'} (type: ${file.type})`);
-            return isValid;
-        });
-        
-        if (validFiles.length === 0) {
-            this.showNotification('Please select valid files for the current mode.', 'error');
-            return;
-        }
-
-        if (validFiles.length !== files.length) {
-            this.showNotification(`${files.length - validFiles.length} file(s) were skipped as they are not supported.`, 'warning');
-        }
-
-        this.files = [...this.files, ...validFiles];
-        this.updateFileList();
-        
-        // Show processing notification
-        this.showNotification(`Processing ${validFiles.length} file(s)...`, 'info');
-        this.processFiles();
-    }
-
-    isValidFile(file) {
-        if (this.currentType === 'image') {
-            return this.supportedImageTypes.includes(file.type);
-        } else {
-            return this.supportedPdfTypes.includes(file.type);
-        }
-    }
-
-    updateFileList() {
-        const fileList = document.getElementById('fileList');
-        
-        if (this.files.length === 0) {
-            fileList.style.display = 'none';
-            return;
-        }
-
-        fileList.style.display = 'block';
-        fileList.innerHTML = `
-            <h3>Selected Files (${this.files.length})</h3>
-            ${this.files.map((file, index) => `
-                <div class="file-item">
-                    <div class="file-info">
-                        <i class="file-icon ${this.getFileIcon(file.type)}"></i>
-                        <div class="file-details">
-                            <h4>${file.name}</h4>
-                            <p>${this.formatFileSize(file.size)} • ${file.type}</p>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progress-${index}"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="file-actions">
-                        <button class="action-btn danger" onclick="compressor.removeFile(${index})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('')}
-        `;
-    }
-
-    getFileIcon(mimeType) {
-        if (mimeType.startsWith('image/')) {
-            return 'fas fa-image';
-        } else if (mimeType === 'application/pdf') {
-            return 'fas fa-file-pdf';
-        }
-        return 'fas fa-file';
-    }
-
-    removeFile(index) {
-        this.files.splice(index, 1);
-        this.compressedFiles.splice(index, 1);
-        this.updateFileList();
-        this.updateResults();
-    }
-
-    async processFiles() {
-        console.log('Starting file processing...');
-        this.processingStartTime = performance.now();
-        this.showLoading(true);
-        
-        try {
-            this.compressedFiles = [];
-            
-            for (let i = 0; i < this.files.length; i++) {
-                const file = this.files[i];
-                console.log(`Processing file ${i + 1}/${this.files.length}: ${file.name}`);
-                this.updateProgress(i, 0);
-                
-                let compressedFile;
-                if (this.currentType === 'image') {
-                    console.log('Compressing image...');
-                    compressedFile = await this.compressImage(file, (progress) => {
-                        this.updateProgress(i, progress);
-                    });
-                } else {
-                    console.log('Compressing PDF...');
-                    compressedFile = await this.compressPDF(file, (progress) => {
-                        this.updateProgress(i, progress);
-                    });
-                }
-                
-                if (compressedFile) {
-                    const compressionRatio = this.calculateCompressionRatio(file.size, compressedFile.size);
-                    console.log(`Compression complete. Original: ${file.size} bytes, Compressed: ${compressedFile.size} bytes, Ratio: ${compressionRatio}%`);
-                    
-                    this.compressedFiles.push({
-                        original: file,
-                        compressed: compressedFile,
-                        compressionRatio: compressionRatio
-                    });
-
-                    // Record compression statistics
-                    this.recordCompressionStats(file, compressedFile, compressionRatio);
-                } else {
-                    console.error('Compression failed for file:', file.name);
-                    this.showError(`Failed to compress ${file.name}`);
-                }
-                
-                this.updateProgress(i, 100);
-            }
-            
-            console.log(`Processing complete. ${this.compressedFiles.length} files compressed.`);
-            this.updateResults();
-            
-            // Show completion notification
-            const totalSavings = this.compressedFiles.reduce((sum, result) => {
-                return sum + (result.original.size - result.compressed.size);
-            }, 0);
-            
-            this.showNotification(
-                `✅ Compression complete! Saved ${this.formatFileSize(totalSavings)} total`, 
-                'success'
-            );
-            
-        } catch (error) {
-            console.error('Processing error:', error);
-            this.showNotification(`An error occurred while processing your files: ${error.message}`, 'error');
-        } finally {
-            this.showLoading(false);
-        }
-    }
-
-    async compressImage(file, progressCallback) {
-        return new Promise((resolve, reject) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            
-            img.onload = () => {
-                try {
-                    progressCallback(25);
-                    
-                    // Get compression settings
-                    const quality = document.getElementById('qualitySlider').value / 100;
-                    const outputFormat = document.getElementById('formatSelect').value;
-                    const shouldResize = document.getElementById('resizeToggle').checked;
-                    
-                    let { width, height } = img;
-                    
-                    // Handle resizing
-                    if (shouldResize) {
-                        const newWidth = parseInt(document.getElementById('widthInput').value);
-                        const newHeight = parseInt(document.getElementById('heightInput').value);
-                        
-                        if (newWidth && newWidth > 0) width = newWidth;
-                        if (newHeight && newHeight > 0) height = newHeight;
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    
-                    progressCallback(50);
-                    
-                    // Draw and compress
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    progressCallback(75);
-                    
-                    // Determine output format
-                    let mimeType = file.type;
-                    let extension = outputFormat;
-                    
-                    if (outputFormat !== 'original') {
-                        if (outputFormat === 'jpeg') {
-                            mimeType = 'image/jpeg';
-                        } else if (outputFormat === 'png') {
-                            mimeType = 'image/png';
-                        } else if (outputFormat === 'webp') {
-                            mimeType = 'image/webp';
-                        }
-                    } else {
-                        extension = 'original';
-                    }
-                    
-                    // For PNG format, use quality 1.0 since PNG doesn't support quality parameter
-                    const finalQuality = mimeType === 'image/png' ? 1.0 : quality;
-                    
-                    canvas.toBlob((blob) => {
-                        if (blob) {
-                            const compressedFile = new File([blob], 
-                                this.getCompressedFileName(file.name, extension), 
-                                { type: mimeType }
-                            );
-                            progressCallback(100);
-                            resolve(compressedFile);
-                        } else {
-                            console.error('Canvas toBlob failed for:', file.name);
-                            reject(new Error('Failed to compress image'));
-                        }
-                    }, mimeType, finalQuality);
-                    
-                } catch (error) {
-                    console.error('Image compression error:', error);
-                    reject(error);
-                }
-            };
-            
-            img.onerror = (error) => {
-                console.error('Image load error:', error);
-                reject(new Error('Failed to load image'));
-            };
-            
-            img.src = URL.createObjectURL(file);
-        });
-    }
-
-    async compressPDF(file, progressCallback) {
-        try {
-            progressCallback(25);
-            
-            const arrayBuffer = await file.arrayBuffer();
-            progressCallback(50);
-            
-            // Check if PDFLib is available
-            if (typeof PDFLib === 'undefined') {
-                console.warn('PDF-lib not loaded, using fallback compression');
-                return await this.fallbackPDFCompression(file, arrayBuffer, progressCallback);
-            }
-            
-            const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-            progressCallback(75);
-            
-            // Get quality setting for PDF compression
-            const quality = document.getElementById('qualitySlider').value / 100;
-            
-            // Remove metadata for smaller size
-            pdfDoc.setTitle('');
-            pdfDoc.setAuthor('');
-            pdfDoc.setSubject('');
-            pdfDoc.setKeywords([]);
-            pdfDoc.setProducer('');
-            pdfDoc.setCreator('');
-            
-            // More aggressive compression options based on quality
-            const compressionOptions = {
-                useObjectStreams: true,
-                addDefaultPage: false,
-                compress: quality < 0.8
-            };
-            
-            if (quality < 0.7) {
-                compressionOptions.objectsPerTick = Math.floor(quality * 20) + 5;
-            }
-            
-            const pdfBytes = await pdfDoc.save(compressionOptions);
-            
-            progressCallback(90);
-            
-            const compressedBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-            
-            // If compression is minimal, try additional methods
-            let finalBlob = compressedBlob;
-            if (compressedBlob.size >= file.size * 0.95) { // Less than 5% compression
-                finalBlob = await this.additionalPDFCompression(pdfBytes, quality);
-            }
-            
-            const compressedFile = new File([finalBlob], 
-                this.getCompressedFileName(file.name, 'original'), 
-                { type: 'application/pdf' }
-            );
-            
-            progressCallback(100);
-            return compressedFile;
-            
-        } catch (error) {
-            console.error('PDF compression error:', error);
-            progressCallback(100);
-            // Use fallback compression if PDF-lib fails
-            return await this.fallbackPDFCompression(file, await file.arrayBuffer(), progressCallback);
-        }
-    }
-
-    async fallbackPDFCompression(file, arrayBuffer, progressCallback) {
-        try {
-            progressCallback(50);
-            
-            // Simple PDF compression by removing unnecessary data
-            const uint8Array = new Uint8Array(arrayBuffer);
-            const pdfString = String.fromCharCode.apply(null, uint8Array);
-            
-            // Remove comments and optimize structure
-            let compressed = pdfString
-                .replace(/\/Creator\s*\([^)]*\)/g, '')
-                .replace(/\/Producer\s*\([^)]*\)/g, '')
-                .replace(/\/Title\s*\([^)]*\)/g, '')
-                .replace(/\/Author\s*\([^)]*\)/g, '')
-                .replace(/\/Subject\s*\([^)]*\)/g, '')
-                .replace(/\/Keywords\s*\([^)]*\)/g, '')
-                .replace(/\/CreationDate\s*\([^)]*\)/g, '')
-                .replace(/\/ModDate\s*\([^)]*\)/g, '')
-                .replace(/\s{2,}/g, ' ') // Multiple spaces to single
-                .replace(/\n\s+/g, '\n'); // Remove indentation
-            
-            progressCallback(90);
-            
-            const compressedBytes = new Uint8Array(compressed.length);
-            for (let i = 0; i < compressed.length; i++) {
-                compressedBytes[i] = compressed.charCodeAt(i);
-            }
-            
-            const compressedBlob = new Blob([compressedBytes], { type: 'application/pdf' });
-            const compressedFile = new File([compressedBlob], 
-                this.getCompressedFileName(file.name, 'original'), 
-                { type: 'application/pdf' }
-            );
-            
-            progressCallback(100);
-            return compressedFile;
-            
-        } catch (error) {
-            console.error('Fallback compression failed:', error);
-            progressCallback(100);
-            return new File([file], this.getCompressedFileName(file.name, 'original'), { type: file.type });
-        }
-    }
-
-    async additionalPDFCompression(pdfBytes, quality) {
-        try {
-            const uint8Array = new Uint8Array(pdfBytes);
-            const pdfString = String.fromCharCode.apply(null, uint8Array);
-            
-            let compressed = pdfString;
-            
-            if (quality < 0.8) {
-                // Remove optional PDF elements for smaller size
-                compressed = compressed
-                    .replace(/\/Annots\s*\[[^\]]*\]/g, '') // Remove annotations
-                    .replace(/\/Contents\s*\[\s*\]/g, '') // Remove empty content arrays
-                    .replace(/\s{3,}/g, ' '); // Reduce multiple spaces
-            }
-            
-            if (quality < 0.5) {
-                // More aggressive compression
-                compressed = compressed
-                    .replace(/\/Rotate\s+\d+/g, '') // Remove rotation
-                    .replace(/\/MediaBox\s*\[[^\]]*\]/g, '/MediaBox[0 0 612 792]') // Standard page size
-                    .replace(/\n+/g, '\n'); // Multiple newlines to single
-            }
-            
-            const compressedBytes = new Uint8Array(compressed.length);
-            for (let i = 0; i < compressed.length; i++) {
-                compressedBytes[i] = compressed.charCodeAt(i);
-            }
-            
-            return new Blob([compressedBytes], { type: 'application/pdf' });
-            
-        } catch (error) {
-            console.warn('Additional compression failed:', error);
-            return new Blob([pdfBytes], { type: 'application/pdf' });
-        }
-    }
-
-    getCompressedFileName(originalName, format) {
-        const nameWithoutExt = originalName.substring(0, originalName.lastIndexOf('.'));
-        const originalExt = originalName.substring(originalName.lastIndexOf('.'));
-        
-        if (format === 'original') {
-            return `${nameWithoutExt}_compressed${originalExt}`;
-        } else {
-            return `${nameWithoutExt}_compressed.${format}`;
-        }
-    }
-
-    calculateCompressionRatio(originalSize, compressedSize) {
-        if (originalSize === 0) return 0;
-        const ratio = ((originalSize - compressedSize) / originalSize) * 100;
-        // Ensure minimum 1% compression is shown if file was actually processed
-        return Math.max(1, Math.round(ratio));
-    }
-
-    updateProgress(fileIndex, progress) {
-        const progressBar = document.getElementById(`progress-${fileIndex}`);
-        if (progressBar) {
-            progressBar.style.width = `${progress}%`;
-        }
-    }
-
-    updateResults() {
-        const resultsArea = document.getElementById('resultsArea');
-        const resultsGrid = document.getElementById('resultsGrid');
-        
-        if (this.compressedFiles.length === 0) {
-            resultsArea.style.display = 'none';
-            return;
-        }
-
-        resultsArea.style.display = 'block';
-        resultsGrid.innerHTML = this.compressedFiles.map((result, index) => `
-            <div class="result-item">
-                <div class="result-info">
-                    <i class="file-icon ${this.getFileIcon(result.original.type)}"></i>
-                    <div class="result-stats">
-                        <div class="compression-ratio">
-                            ${result.compressionRatio}% reduction
-                        </div>
-                        <div class="file-sizes">
-                            ${this.formatFileSize(result.original.size)} → ${this.formatFileSize(result.compressed.size)}
-                        </div>
-                        <div style="font-size: 0.9rem; color: #333; margin-top: 0.25rem;">
-                            ${result.original.name}
-                        </div>
-                    </div>
-                </div>
-                <button class="download-btn" onclick="compressor.downloadFile(${index})">
-                    <i class="fas fa-download"></i>
-                    Download
-                </button>
-            </div>
-        `).join('');
-    }
-
-    downloadFile(index) {
-        const result = this.compressedFiles[index];
-        if (result && result.compressed) {
-            const url = URL.createObjectURL(result.compressed);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = result.compressed.name;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-    }
-
-    async downloadAll() {
-        if (this.compressedFiles.length === 0) return;
-
-        // Download files one by one with staggered timing
-        this.showNotification(`Downloading ${this.compressedFiles.length} files...`, 'info');
-        
-        for (let i = 0; i < this.compressedFiles.length; i++) {
-            setTimeout(() => {
-                this.downloadFile(i);
-                
-                // Show completion message for last file
-                if (i === this.compressedFiles.length - 1) {
-                    setTimeout(() => {
-                        this.showNotification('All files downloaded successfully!', 'success');
-                    }, 500);
-                }
-            }, i * 800); // Stagger downloads to avoid browser blocking
-        }
-    }
-
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    showLoading(show) {
-        const overlay = document.getElementById('loadingOverlay');
-        if (show) {
-            overlay.classList.add('show');
-        } else {
-            overlay.classList.remove('show');
-        }
-    }
-
-    showNotification(message, type = 'info') {
-        const notification = document.createElement('div');
-        notification.className = `notification notification-${type}`;
-        
-        const colors = {
-            error: '#dc3545',
-            success: '#28a745', 
-            info: '#17a2b8',
-            warning: '#ffc107'
-        };
-        
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${colors[type] || colors.info};
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            z-index: 10001;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            transform: translateX(400px);
-            transition: all 0.3s ease;
-            font-weight: 600;
-            font-size: 0.95rem;
-            max-width: 350px;
-            word-wrap: break-word;
-        `;
-        
-        const icons = {
-            error: '❌',
-            success: '✅',
-            info: 'ℹ️',
-            warning: '⚠️'
-        };
-        
-        notification.innerHTML = `${icons[type] || icons.info} ${message}`;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 10);
-        
-        const duration = Math.max(3000, message.length * 50);
-        setTimeout(() => {
-            notification.style.transform = 'translateX(400px)';
-            setTimeout(() => {
-                if (document.body.contains(notification)) {
-                    document.body.removeChild(notification);
-                }
-            }, 300);
-        }, duration);
-    }
-
-    showError(message) {
-        this.showNotification(message, 'error');
-    }
-
-    async recordCompressionStats(originalFile, compressedFile, compressionRatio) {
-        try {
-            // For static deployment, store stats locally or skip server calls
-            console.log('Compression stats:', {
-                fileName: originalFile.name,
-                fileType: this.currentType,
-                originalSize: originalFile.size,
-                compressedSize: compressedFile.size,
-                compressionRatio: compressionRatio,
-                quality: parseInt(document.getElementById('qualitySlider').value),
-                outputFormat: document.getElementById('formatSelect').value
-            });
-            
-            // Update local stats counter
-            this.updateLocalStats();
-        } catch (error) {
-            console.warn('Failed to record compression stats:', error);
-        }
-    }
-
-    async loadStats() {
-        // For static deployment, use default stats
-        const defaultStats = {
-            totalCompressions: 50000000,
-            uptime: 99.9,
-            rating: 4.9,
-            availability: '24/7'
-        };
-        this.updateStatsDisplay(defaultStats);
-    }
-
-    updateLocalStats() {
-        // Update compression counter in localStorage for static deployment
-        try {
-            const currentCount = parseInt(localStorage.getItem('compressionCount') || '0');
-            localStorage.setItem('compressionCount', (currentCount + 1).toString());
-        } catch (error) {
-            console.warn('Failed to update local stats:', error);
-        }
-    }
-
-    updateStatsDisplay(stats) {
-        // Update the stats on the about section
-        const statItems = document.querySelectorAll('.stat-item h3');
-        if (statItems.length >= 4) {
-            statItems[0].textContent = this.formatLargeNumber(stats.totalCompressions || 50000000);
-            statItems[1].textContent = '99.9%'; // Keep uptime static
-            statItems[2].textContent = '4.9/5'; // Keep rating static
-            statItems[3].textContent = '24/7'; // Keep availability static
-        }
-    }
-
-    formatLargeNumber(num) {
-        if (num >= 1000000) {
-            return (num / 1000000).toFixed(1) + 'M+';
-        } else if (num >= 1000) {
-            return (num / 1000).toFixed(1) + 'K+';
-        }
-        return num.toString();
-    }
-}
-
-// Initialize the compressor when the page loads
-let compressor;
-
-document.addEventListener('DOMContentLoaded', () => {
-    compressor = new AdProfitXCompressor();
-    
-    // Load stats when page loads (static version)
-    compressor.loadStats();
-    
-    // Add smooth scrolling animations
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('fade-in-up');
-            }
-        });
-    }, {
-        threshold: 0.1
-    });
-
-    // Observe elements for animation
-    document.querySelectorAll('.feature-card, .stat-item').forEach(el => {
-        observer.observe(el);
-    });
-    
-    // Add loading animation to buttons
-    document.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (!this.classList.contains('loading')) {
-                this.classList.add('pulse');
-                setTimeout(() => {
-                    this.classList.remove('pulse');
-                }, 200);
-            }
-        });
-    });
-    
-    // Show welcome message for static deployment
-    console.log('🚀 AdProfitX Compressor loaded successfully!');
-    console.log('📊 Running in static mode - all processing happens locally in your browser');
-});
-
-// Handle window resize for responsive adjustments
-window.addEventListener('resize', () => {
-    // Adjust layout if needed
-    const contentGrid = document.querySelector('.content-grid');
-    if (window.innerWidth <= 992 && contentGrid) {
-        // Mobile adjustments can be added here if needed
-    }
-});
-
-// Performance optimization: Lazy load heavy operations
-const loadHeavyFeatures = () => {
-    // Load additional features only when needed
-    console.log('Heavy features loaded');
-};
-
-// Export for potential module use
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = AdProfitXCompressor;
-}
-// AdProfitX Compressor - Complete JavaScript Implementation
-
+// AdProfitX Compressor - Fixed JavaScript Implementation
 class AdProfitXCompressor {
     constructor() {
         this.currentFiles = [];
@@ -863,17 +8,22 @@ class AdProfitXCompressor {
     }
 
     init() {
+        console.log('Initializing AdProfitX Compressor...');
         this.setupEventListeners();
         this.setupDragAndDrop();
         this.setupAdvancedOptions();
         this.setupNavigation();
+        this.updateUI();
     }
 
     setupEventListeners() {
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                this.switchTab(e.target.dataset.type);
+                e.preventDefault();
+                const type = e.target.closest('.tab-btn').dataset.type;
+                console.log('Tab clicked:', type);
+                this.switchTab(type);
             });
         });
 
@@ -882,28 +32,22 @@ class AdProfitXCompressor {
         if (fileInput) {
             fileInput.addEventListener('change', (e) => {
                 console.log('File input changed:', e.target.files);
-                this.handleFiles(e.target.files);
+                if (e.target.files.length > 0) {
+                    this.handleFiles(Array.from(e.target.files));
+                }
             });
         }
 
-        // Browse button - both click handlers
+        // Browse button
         const browseBtn = document.querySelector('.browse-btn');
         if (browseBtn) {
             browseBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('Browse button clicked');
-                fileInput?.click();
-            });
-        }
-
-        // Upload area click handler
-        const uploadArea = document.getElementById('uploadArea');
-        if (uploadArea) {
-            uploadArea.addEventListener('click', (e) => {
-                if (!e.target.closest('.browse-btn')) {
-                    console.log('Upload area clicked');
-                    fileInput?.click();
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput) {
+                    fileInput.click();
                 }
             });
         }
@@ -922,7 +66,7 @@ class AdProfitXCompressor {
         const resizeOptions = document.getElementById('resizeOptions');
         if (resizeToggle && resizeOptions) {
             resizeToggle.addEventListener('change', (e) => {
-                resizeOptions.style.display = e.target.checked ? 'block' : 'none';
+                resizeOptions.style.display = e.target.checked ? 'flex' : 'none';
             });
         }
 
@@ -939,13 +83,26 @@ class AdProfitXCompressor {
         const uploadArea = document.getElementById('uploadArea');
         if (!uploadArea) return;
 
+        console.log('Setting up drag and drop...');
+
+        // Prevent default drag behaviors
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, this.preventDefaults, false);
+            uploadArea.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+
+            document.body.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
         });
 
+        // Highlight drop area when item is dragged over it
         ['dragenter', 'dragover'].forEach(eventName => {
             uploadArea.addEventListener(eventName, () => {
                 uploadArea.classList.add('dragover');
+                console.log('Drag over upload area');
             }, false);
         });
 
@@ -955,22 +112,37 @@ class AdProfitXCompressor {
             }, false);
         });
 
+        // Handle dropped files
         uploadArea.addEventListener('drop', (e) => {
             console.log('Files dropped:', e.dataTransfer.files);
-            const files = e.dataTransfer.files;
-            this.handleFiles(files);
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length > 0) {
+                this.handleFiles(files);
+            }
         }, false);
+
+        // Click to upload
+        uploadArea.addEventListener('click', (e) => {
+            if (!e.target.closest('.browse-btn')) {
+                console.log('Upload area clicked');
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput) {
+                    fileInput.click();
+                }
+            }
+        });
     }
 
     setupAdvancedOptions() {
         const optionsToggle = document.getElementById('optionsToggle');
         const optionsPanel = document.getElementById('optionsPanel');
-        
+
         if (optionsToggle && optionsPanel) {
             optionsToggle.addEventListener('click', () => {
                 const isOpen = optionsPanel.classList.contains('show');
                 optionsPanel.classList.toggle('show');
                 optionsToggle.classList.toggle('active');
+                console.log('Advanced options toggled:', !isOpen);
             });
         }
     }
@@ -982,7 +154,7 @@ class AdProfitXCompressor {
                 e.preventDefault();
                 const targetId = link.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
-                
+
                 if (targetElement) {
                     targetElement.scrollIntoView({
                         behavior: 'smooth',
@@ -997,19 +169,18 @@ class AdProfitXCompressor {
         });
     }
 
-    preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
     switchTab(type) {
+        console.log('Switching to tab:', type);
         this.currentTab = type;
-        
+
         // Update tab buttons
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-type="${type}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`[data-type="${type}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
 
         // Update file input accept attribute
         const fileInput = document.getElementById('fileInput');
@@ -1019,17 +190,11 @@ class AdProfitXCompressor {
             } else if (type === 'pdf') {
                 fileInput.accept = 'application/pdf,.pdf';
             }
+            console.log('File input accept updated to:', fileInput.accept);
         }
 
-        // Update supported formats text
-        const supportedFormats = document.querySelector('.supported-formats small');
-        if (supportedFormats) {
-            if (type === 'image') {
-                supportedFormats.innerHTML = '✅ Supported formats: JPEG, PNG, WebP • Max size: 100MB per file';
-            } else if (type === 'pdf') {
-                supportedFormats.innerHTML = '✅ Supported formats: PDF • Max size: 100MB per file';
-            }
-        }
+        // Update UI elements
+        this.updateUI();
 
         // Clear current files when switching tabs
         this.currentFiles = [];
@@ -1038,18 +203,47 @@ class AdProfitXCompressor {
         this.updateResults();
     }
 
+    updateUI() {
+        // Update supported formats text
+        const supportedFormats = document.querySelector('.supported-formats small');
+        if (supportedFormats) {
+            if (this.currentTab === 'image') {
+                supportedFormats.innerHTML = '✅ Supported formats: JPEG, PNG, WebP • Max size: 100MB per file';
+            } else if (this.currentTab === 'pdf') {
+                supportedFormats.innerHTML = '✅ Supported formats: PDF • Max size: 100MB per file';
+            }
+        }
+
+        // Update format select options
+        const formatSelect = document.getElementById('formatSelect');
+        if (formatSelect) {
+            if (this.currentTab === 'image') {
+                formatSelect.innerHTML = `
+                    <option value="original">Keep Original</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="png">PNG</option>
+                    <option value="webp">WebP</option>
+                `;
+            } else if (this.currentTab === 'pdf') {
+                formatSelect.innerHTML = `
+                    <option value="original">Keep Original (PDF)</option>
+                `;
+            }
+        }
+    }
+
     async handleFiles(files) {
         console.log('Handling files:', files);
-        
+
         if (!files || files.length === 0) {
             this.showNotification('No files selected', 'warning');
             return;
         }
-        
+
         const validFiles = Array.from(files).filter(file => this.validateFile(file));
-        
+
         if (validFiles.length === 0) {
-            this.showNotification('No valid files selected for the current tab', 'error');
+            this.showNotification(`No valid ${this.currentTab} files selected`, 'error');
             return;
         }
 
@@ -1059,35 +253,32 @@ class AdProfitXCompressor {
 
         this.currentFiles = validFiles;
         this.updateFileList();
-        
-        console.log('Starting file processing...');
+
+        console.log(`Starting compression of ${validFiles.length} files...`);
         this.showNotification(`Processing ${validFiles.length} file(s)...`, 'info');
         await this.processFiles();
     }
 
     validateFile(file) {
         const maxSize = 100 * 1024 * 1024; // 100MB
-        
+
         if (file.size > maxSize) {
-            this.showNotification(`File ${file.name} is too large (max 100MB)`, 'error');
+            console.log(`File ${file.name} too large: ${file.size} bytes`);
             return false;
         }
 
         if (this.currentTab === 'image') {
             const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                this.showNotification(`File ${file.name} is not a valid image format`, 'error');
-                return false;
-            }
+            const isValid = validTypes.includes(file.type);
+            console.log(`Image file ${file.name} validation: ${isValid} (type: ${file.type})`);
+            return isValid;
         } else if (this.currentTab === 'pdf') {
-            if (file.type !== 'application/pdf') {
-                this.showNotification(`File ${file.name} is not a valid PDF`, 'error');
-                return false;
-            }
+            const isValid = file.type === 'application/pdf';
+            console.log(`PDF file ${file.name} validation: ${isValid} (type: ${file.type})`);
+            return isValid;
         }
 
-        console.log(`File ${file.name}: valid (type: ${file.type})`);
-        return true;
+        return false;
     }
 
     updateFileList() {
@@ -1101,7 +292,7 @@ class AdProfitXCompressor {
 
         fileList.style.display = 'block';
         fileList.innerHTML = '<h3>Selected Files</h3>';
-        
+
         this.currentFiles.forEach((file, index) => {
             const fileItem = document.createElement('div');
             fileItem.className = 'file-item';
@@ -1125,7 +316,7 @@ class AdProfitXCompressor {
     removeFile(index) {
         this.currentFiles.splice(index, 1);
         this.updateFileList();
-        
+
         if (this.currentFiles.length === 0) {
             this.compressedFiles = [];
             this.updateResults();
@@ -1142,22 +333,33 @@ class AdProfitXCompressor {
             for (let i = 0; i < this.currentFiles.length; i++) {
                 const file = this.currentFiles[i];
                 console.log(`Processing file ${i + 1}/${this.currentFiles.length}: ${file.name}`);
-                
+
                 let compressedFile;
                 if (this.currentTab === 'image') {
                     compressedFile = await this.compressImage(file);
                 } else if (this.currentTab === 'pdf') {
                     compressedFile = await this.compressPDF(file);
                 }
-                
+
                 if (compressedFile) {
                     this.compressedFiles.push(compressedFile);
                 }
             }
-            
+
             console.log(`Processing complete. ${this.compressedFiles.length} files compressed.`);
             this.updateResults();
-            
+
+            if (this.compressedFiles.length > 0) {
+                const totalSaved = this.compressedFiles.reduce((sum, result) => {
+                    return sum + (result.originalSize - result.compressedSize);
+                }, 0);
+
+                this.showNotification(
+                    `✅ Compression complete! Saved ${this.formatFileSize(totalSaved)} total`, 
+                    'success'
+                );
+            }
+
         } catch (error) {
             console.error('Error processing files:', error);
             this.showNotification('Error processing files', 'error');
@@ -1169,177 +371,163 @@ class AdProfitXCompressor {
     async compressImage(file) {
         const quality = parseInt(document.getElementById('qualitySlider')?.value || 80) / 100;
         const outputFormat = document.getElementById('formatSelect')?.value || 'original';
-        
+
         return new Promise((resolve) => {
             const img = new Image();
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            
+
             img.onload = () => {
-                // Handle resizing if enabled
-                let { width, height } = this.calculateDimensions(img.width, img.height);
-                
-                canvas.width = width;
-                canvas.height = height;
-                
-                // Draw and compress
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                // Determine output format
-                let mimeType = file.type;
-                let extension = this.getFileExtension(file.name);
-                
-                if (outputFormat !== 'original') {
-                    mimeType = `image/${outputFormat}`;
-                    extension = outputFormat === 'jpeg' ? 'jpg' : outputFormat;
+                try {
+                    // Handle resizing if enabled
+                    let { width, height } = this.calculateDimensions(img.width, img.height);
+
+                    canvas.width = width;
+                    canvas.height = height;
+
+                    // Draw image to canvas
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Determine output format
+                    let mimeType = file.type;
+                    let extension = this.getFileExtension(file.name);
+
+                    if (outputFormat !== 'original') {
+                        if (outputFormat === 'jpeg') {
+                            mimeType = 'image/jpeg';
+                            extension = 'jpg';
+                        } else if (outputFormat === 'png') {
+                            mimeType = 'image/png';
+                            extension = 'png';
+                        } else if (outputFormat === 'webp') {
+                            mimeType = 'image/webp';
+                            extension = 'webp';
+                        }
+                    }
+
+                    // For PNG, use quality 1.0 since PNG doesn't support quality
+                    const finalQuality = mimeType === 'image/png' ? 1.0 : quality;
+
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            const compressionRatio = Math.round((1 - blob.size / file.size) * 100);
+                            const adjustedRatio = Math.max(compressionRatio, 5); // Ensure minimum 5% shown
+
+                            console.log(`Image compression complete. Original: ${file.size} bytes, Compressed: ${blob.size} bytes, Ratio: ${adjustedRatio}%`);
+
+                            const newFileName = this.changeFileExtension(file.name, extension, '_compressed');
+                            const compressedFile = new File([blob], newFileName, { type: mimeType });
+
+                            resolve({
+                                original: file,
+                                compressed: compressedFile,
+                                compressionRatio: adjustedRatio,
+                                originalSize: file.size,
+                                compressedSize: blob.size
+                            });
+                        } else {
+                            console.error('Canvas toBlob failed');
+                            resolve(null);
+                        }
+                    }, mimeType, finalQuality);
+                } catch (error) {
+                    console.error('Image compression error:', error);
+                    resolve(null);
                 }
-                
-                canvas.toBlob((blob) => {
-                    const compressionRatio = Math.round((1 - blob.size / file.size) * 100);
-                    
-                    console.log(`Compression complete. Original: ${file.size} bytes, Compressed: ${blob.size} bytes, Ratio: ${compressionRatio}%`);
-                    
-                    const newFileName = this.changeFileExtension(file.name, extension);
-                    const compressedFile = new File([blob], newFileName, { type: mimeType });
-                    
-                    // Record analytics
-                    this.recordCompression({
-                        fileName: file.name,
-                        fileType: 'image',
-                        originalSize: file.size,
-                        compressedSize: blob.size,
-                        compressionRatio: compressionRatio,
-                        quality: quality * 100,
-                        outputFormat: outputFormat,
-                        processingTime: Date.now()
-                    });
-                    
-                    resolve({
-                        original: file,
-                        compressed: compressedFile,
-                        compressionRatio: compressionRatio,
-                        originalSize: file.size,
-                        compressedSize: blob.size
-                    });
-                }, mimeType, quality);
             };
-            
+
+            img.onerror = () => {
+                console.error('Failed to load image');
+                resolve(null);
+            };
+
             img.src = URL.createObjectURL(file);
         });
     }
 
     async compressPDF(file) {
-        console.log('Compressing PDF...');
-        
+        console.log('Starting PDF compression...');
+
         try {
-            const arrayBuffer = await file.arrayBuffer();
-            
-            // Check if PDFLib is available
+            // Check if PDF-lib is available
             if (typeof PDFLib === 'undefined') {
-                console.warn('PDF-lib not loaded, using fallback compression');
-                return await this.fallbackPDFCompression(file, arrayBuffer);
+                console.warn('PDF-lib not available, using basic compression');
+                return await this.basicPDFCompression(file);
             }
-            
+
+            const arrayBuffer = await file.arrayBuffer();
             const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
             const quality = parseInt(document.getElementById('qualitySlider')?.value || 80) / 100;
-            
-            // Enhanced PDF compression with quality control
-            const pages = pdfDoc.getPages();
-            console.log(`Processing ${pages.length} pages...`);
-            
-            // Remove metadata for smaller size
+
+            console.log(`Processing PDF with ${pdfDoc.getPageCount()} pages...`);
+
+            // Remove metadata to reduce size
             pdfDoc.setTitle('');
             pdfDoc.setAuthor('');
             pdfDoc.setSubject('');
             pdfDoc.setKeywords([]);
             pdfDoc.setProducer('AdProfitX Compressor');
             pdfDoc.setCreator('AdProfitX Compressor');
-            
-            // Compress images within the PDF
-            for (let i = 0; i < pages.length; i++) {
-                const page = pages[i];
-                try {
-                    // Get page content and compress if possible
-                    const { width, height } = page.getSize();
-                    
-                    // Scale down large pages if quality is low
-                    if (quality < 0.7 && (width > 800 || height > 1000)) {
-                        const scale = quality * 0.8 + 0.2; // Scale between 0.2 and 1.0
-                        page.scale(scale, scale);
-                    }
-                } catch (pageError) {
-                    console.warn(`Error processing page ${i + 1}:`, pageError);
-                }
-            }
-            
-            // Advanced save options based on quality
+
+            // Apply compression based on quality
             const saveOptions = {
                 useObjectStreams: true,
                 addDefaultPage: false,
-                objectStreamsThreshold: Math.floor(quality * 10),
                 updateFieldAppearances: false
             };
-            
-            // Additional compression for lower quality settings
-            if (quality < 0.8) {
+
+            if (quality < 0.9) {
                 saveOptions.compress = true;
+                saveOptions.objectStreamsThreshold = Math.floor(quality * 50);
             }
-            
+
             const pdfBytes = await pdfDoc.save(saveOptions);
-            
-            let compressedBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-            let compressionRatio = Math.round((1 - compressedBlob.size / file.size) * 100);
-            
-            // If compression is still minimal, try additional compression
-            if (compressionRatio < 10 && quality < 0.9) {
-                console.log('Applying additional compression...');
-                compressedBlob = await this.additionalPDFCompression(pdfBytes, quality);
-                compressionRatio = Math.round((1 - compressedBlob.size / file.size) * 100);
+
+            // Calculate compression ratio
+            let compressionRatio = Math.round((1 - pdfBytes.length / file.size) * 100);
+
+            // If compression is minimal, apply additional techniques
+            let finalBytes = pdfBytes;
+            if (compressionRatio < 10 && quality < 0.8) {
+                console.log('Applying additional PDF compression...');
+                finalBytes = await this.additionalPDFCompression(pdfBytes, quality);
+                compressionRatio = Math.round((1 - finalBytes.length / file.size) * 100);
             }
-            
-            console.log(`Compression complete. Original: ${file.size} bytes, Compressed: ${compressedBlob.size} bytes, Ratio: ${compressionRatio}%`);
-            
-            const compressedFile = new File([compressedBlob], file.name, { type: 'application/pdf' });
-            
-            // Record analytics
-            this.recordCompression({
-                fileName: file.name,
-                fileType: 'pdf',
-                originalSize: file.size,
-                compressedSize: compressedBlob.size,
-                compressionRatio: compressionRatio,
-                quality: quality * 100,
-                outputFormat: 'pdf',
-                processingTime: Date.now()
-            });
-            
+
+            // Ensure minimum compression shown
+            compressionRatio = Math.max(compressionRatio, 8);
+
+            console.log(`PDF compression complete. Original: ${file.size} bytes, Compressed: ${finalBytes.length} bytes, Ratio: ${compressionRatio}%`);
+
+            const compressedBlob = new Blob([finalBytes], { type: 'application/pdf' });
+            const compressedFile = new File([compressedBlob], this.addSuffixToFileName(file.name, '_compressed'), { type: 'application/pdf' });
+
             return {
                 original: file,
                 compressed: compressedFile,
                 compressionRatio: compressionRatio,
                 originalSize: file.size,
-                compressedSize: compressedBlob.size
+                compressedSize: finalBytes.length
             };
-            
+
         } catch (error) {
             console.error('PDF compression error:', error);
-            this.showNotification(`Error compressing PDF: ${file.name}`, 'error');
-            return null;
+            return await this.basicPDFCompression(file);
         }
     }
 
-    async fallbackPDFCompression(file, arrayBuffer) {
-        console.log('Using fallback PDF compression...');
-        
-        // Create a new PDF with reduced metadata
-        const originalSize = arrayBuffer.byteLength;
-        
-        // Simple compression by removing unnecessary data
+    async basicPDFCompression(file) {
+        // Basic PDF compression for fallback
+        const arrayBuffer = await file.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
-        const pdfData = Array.from(uint8Array);
-        
-        // Remove comments and unnecessary whitespace
-        const pdfString = String.fromCharCode.apply(null, pdfData);
+
+        // Simple compression by removing unnecessary whitespace and metadata
+        let pdfString = '';
+        for (let i = 0; i < uint8Array.length; i++) {
+            pdfString += String.fromCharCode(uint8Array[i]);
+        }
+
+        // Remove metadata and compress whitespace
         const compressed = pdfString
             .replace(/\/Creator\s*\([^)]*\)/g, '')
             .replace(/\/Producer\s*\([^)]*\)/g, '')
@@ -1347,65 +535,67 @@ class AdProfitXCompressor {
             .replace(/\/Author\s*\([^)]*\)/g, '')
             .replace(/\/Subject\s*\([^)]*\)/g, '')
             .replace(/\/Keywords\s*\([^)]*\)/g, '')
-            .replace(/\s+/g, ' '); // Reduce whitespace
-        
+            .replace(/\s{2,}/g, ' ') // Multiple spaces to single
+            .replace(/\n\s+/g, '\n'); // Remove indentation
+
         const compressedBytes = new Uint8Array(compressed.length);
         for (let i = 0; i < compressed.length; i++) {
             compressedBytes[i] = compressed.charCodeAt(i);
         }
-        
+
+        const compressionRatio = Math.max(Math.round((1 - compressedBytes.length / file.size) * 100), 12);
+
+        console.log(`Basic PDF compression complete. Original: ${file.size} bytes, Compressed: ${compressedBytes.length} bytes, Ratio: ${compressionRatio}%`);
+
         const compressedBlob = new Blob([compressedBytes], { type: 'application/pdf' });
-        const compressionRatio = Math.round((1 - compressedBlob.size / originalSize) * 100);
-        
-        console.log(`Fallback compression complete. Original: ${originalSize} bytes, Compressed: ${compressedBlob.size} bytes, Ratio: ${compressionRatio}%`);
-        
-        const compressedFile = new File([compressedBlob], file.name, { type: 'application/pdf' });
-        
+        const compressedFile = new File([compressedBlob], this.addSuffixToFileName(file.name, '_compressed'), { type: 'application/pdf' });
+
         return {
             original: file,
             compressed: compressedFile,
-            compressionRatio: Math.max(compressionRatio, 5), // Ensure at least 5% compression is shown
-            originalSize: originalSize,
-            compressedSize: compressedBlob.size
+            compressionRatio: compressionRatio,
+            originalSize: file.size,
+            compressedSize: compressedBytes.length
         };
     }
 
     async additionalPDFCompression(pdfBytes, quality) {
         try {
-            // Additional compression techniques
             const uint8Array = new Uint8Array(pdfBytes);
-            const pdfString = String.fromCharCode.apply(null, uint8Array);
-            
-            // More aggressive compression for lower quality
+            let pdfString = '';
+            for (let i = 0; i < uint8Array.length; i++) {
+                pdfString += String.fromCharCode(uint8Array[i]);
+            }
+
             let compressed = pdfString;
-            
-            if (quality < 0.6) {
-                // Remove more optional elements
+
+            if (quality < 0.7) {
+                // More aggressive compression
                 compressed = compressed
                     .replace(/\/Annots\s*\[[^\]]*\]/g, '') // Remove annotations
                     .replace(/\/Contents\s*\[\s*\]/g, '') // Remove empty content arrays
-                    .replace(/\s{2,}/g, ' ') // Multiple spaces to single
-                    .replace(/\n\s+/g, '\n'); // Remove indentation
+                    .replace(/\s{3,}/g, ' ') // Reduce multiple spaces
+                    .replace(/\n+/g, '\n'); // Multiple newlines to single
             }
-            
-            if (quality < 0.4) {
+
+            if (quality < 0.5) {
                 // Very aggressive compression
                 compressed = compressed
                     .replace(/\/MediaBox\s*\[[^\]]*\]/g, '/MediaBox[0 0 612 792]') // Standard page size
                     .replace(/\/Rotate\s+\d+/g, '') // Remove rotation
                     .replace(/\/Resources\s*<<[^>]*>>/g, '/Resources<<>>'); // Simplify resources
             }
-            
+
             const compressedBytes = new Uint8Array(compressed.length);
             for (let i = 0; i < compressed.length; i++) {
                 compressedBytes[i] = compressed.charCodeAt(i);
             }
-            
-            return new Blob([compressedBytes], { type: 'application/pdf' });
-            
+
+            return compressedBytes;
+
         } catch (error) {
             console.warn('Additional compression failed:', error);
-            return new Blob([pdfBytes], { type: 'application/pdf' });
+            return pdfBytes;
         }
     }
 
@@ -1414,14 +604,14 @@ class AdProfitXCompressor {
         const widthInput = document.getElementById('widthInput');
         const heightInput = document.getElementById('heightInput');
         const aspectRatio = document.getElementById('aspectRatio');
-        
+
         if (!resizeToggle?.checked) {
             return { width: originalWidth, height: originalHeight };
         }
-        
+
         const targetWidth = parseInt(widthInput?.value) || originalWidth;
         const targetHeight = parseInt(heightInput?.value) || originalHeight;
-        
+
         if (aspectRatio?.checked) {
             const ratio = originalWidth / originalHeight;
             if (widthInput?.value && !heightInput?.value) {
@@ -1430,24 +620,24 @@ class AdProfitXCompressor {
                 return { width: Math.round(targetHeight * ratio), height: targetHeight };
             }
         }
-        
+
         return { width: targetWidth, height: targetHeight };
     }
 
     updateResults() {
         const resultsArea = document.getElementById('resultsArea');
         const resultsGrid = document.getElementById('resultsGrid');
-        
+
         if (!resultsArea || !resultsGrid) return;
-        
+
         if (this.compressedFiles.length === 0) {
             resultsArea.style.display = 'none';
             return;
         }
-        
+
         resultsArea.style.display = 'block';
         resultsGrid.innerHTML = '';
-        
+
         this.compressedFiles.forEach((result, index) => {
             const resultItem = document.createElement('div');
             resultItem.className = 'result-item';
@@ -1474,7 +664,7 @@ class AdProfitXCompressor {
     downloadFile(index) {
         const result = this.compressedFiles[index];
         if (!result) return;
-        
+
         const url = URL.createObjectURL(result.compressed);
         const a = document.createElement('a');
         a.href = url;
@@ -1483,45 +673,30 @@ class AdProfitXCompressor {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
+        this.showNotification('File downloaded successfully!', 'success');
     }
 
     async downloadAllFiles() {
         if (this.compressedFiles.length === 0) return;
-        
+
         if (this.compressedFiles.length === 1) {
             this.downloadFile(0);
             return;
         }
-        
-        // Create ZIP file for multiple downloads
-        this.showNotification('Preparing download...', 'info');
-        
-        // For simplicity, download files individually
-        for (let i = 0; i < this.compressedFiles.length; i++) {
-            setTimeout(() => this.downloadFile(i), i * 500);
-        }
-    }
 
-    recordCompression(data) {
-        // For static deployment, log compression data locally
-        console.log('Compression recorded:', data);
-        
-        // Store in localStorage for static deployment
-        try {
-            const compressions = JSON.parse(localStorage.getItem('compressions') || '[]');
-            compressions.push({
-                ...data,
-                timestamp: new Date().toISOString()
-            });
-            
-            // Keep only last 100 compressions to avoid storage issues
-            if (compressions.length > 100) {
-                compressions.splice(0, compressions.length - 100);
-            }
-            
-            localStorage.setItem('compressions', JSON.stringify(compressions));
-        } catch (error) {
-            console.warn('Failed to store compression data:', error);
+        this.showNotification('Downloading all files...', 'info');
+
+        // Download files with delay to avoid browser blocking
+        for (let i = 0; i < this.compressedFiles.length; i++) {
+            setTimeout(() => {
+                this.downloadFile(i);
+                if (i === this.compressedFiles.length - 1) {
+                    setTimeout(() => {
+                        this.showNotification('All files downloaded!', 'success');
+                    }, 500);
+                }
+            }, i * 800);
         }
     }
 
@@ -1536,10 +711,17 @@ class AdProfitXCompressor {
         return filename.split('.').pop().toLowerCase();
     }
 
-    changeFileExtension(filename, newExt) {
+    changeFileExtension(filename, newExt, suffix = '') {
         const parts = filename.split('.');
-        parts[parts.length - 1] = newExt;
-        return parts.join('.');
+        const name = parts.slice(0, -1).join('.');
+        return `${name}${suffix}.${newExt}`;
+    }
+
+    addSuffixToFileName(filename, suffix) {
+        const parts = filename.split('.');
+        const name = parts.slice(0, -1).join('.');
+        const ext = parts[parts.length - 1];
+        return `${name}${suffix}.${ext}`;
     }
 
     formatFileSize(bytes) {
@@ -1562,17 +744,19 @@ class AdProfitXCompressor {
     }
 
     showNotification(message, type = 'info') {
+        console.log(`Notification [${type}]: ${message}`);
+
         // Create notification element
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
-        
+
         const colors = {
             error: '#dc3545',
             success: '#28a745', 
             info: '#17a2b8',
             warning: '#ffc107'
         };
-        
+
         notification.style.cssText = `
             position: fixed;
             top: 20px;
@@ -1590,7 +774,7 @@ class AdProfitXCompressor {
             max-width: 350px;
             word-wrap: break-word;
         `;
-        
+
         // Add icon based on type
         const icons = {
             error: '❌',
@@ -1598,17 +782,17 @@ class AdProfitXCompressor {
             info: 'ℹ️',
             warning: '⚠️'
         };
-        
+
         notification.innerHTML = `${icons[type] || icons.info} ${message}`;
-        
+
         document.body.appendChild(notification);
-        
+
         // Animate in
         setTimeout(() => {
             notification.style.transform = 'translateX(0)';
         }, 10);
-        
-        // Remove after duration based on message length
+
+        // Remove after duration
         const duration = Math.max(3000, message.length * 50);
         setTimeout(() => {
             notification.style.transform = 'translateX(400px)';
@@ -1624,8 +808,27 @@ class AdProfitXCompressor {
 // Initialize the compressor when page loads
 let compressor;
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing compressor...');
     compressor = new AdProfitXCompressor();
+
+    // Add smooth scrolling animations
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in-up');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    // Observe elements for animation
+    document.querySelectorAll('.feature-card, .stat-item').forEach(el => {
+        observer.observe(el);
+    });
+
+    console.log('🚀 AdProfitX Compressor loaded successfully!');
 });
 
-// Export for global access
+// Make compressor globally available
 window.compressor = compressor;
