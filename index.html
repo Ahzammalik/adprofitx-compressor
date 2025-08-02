@@ -3,477 +3,702 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>AdProfitX: Free Online File Compressor – Fast & Attractive</title>
-    <meta name="description" content="Compress images, videos, PDFs, and documents with AdProfitX's beautifully redesigned, fast, and free online compression tool. No quality loss, instant downloads.">
-    <meta name="keywords" content="free file compressor, online compressor, compress image, compress pdf, compress video, reduce file size, file optimizer, adprofitx">
-    <link rel="canonical" href="https://www.adprofitx.com/compressor">
-
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.adprofitx.com/compressor">
-    <meta property="og:title" content="AdProfitX: Free Online File Compressor – Fast & Attractive">
-    <meta property="og:description" content="Compress images, videos, PDFs, and more with AdProfitX's beautifully redesigned, fast, and free online compression tool.">
-    <meta property="og:image" content="https://www.adprofitx.com/og-image-v2.jpg"> <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://www.adprofitx.com/compressor">
-    <meta property="twitter:title" content="AdProfitX: Free Online File Compressor – Fast & Attractive">
-    <meta property="twitter:description" content="Compress images, videos, PDFs, and more with AdProfitX's beautifully redesigned, fast, and free online compression tool.">
-    <meta property="twitter:image" content="https://www.adprofitx.com/twitter-image-v2.jpg"> <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+    <title>AdProfitX: Free Online Compressor – Compress Files Fast</title>
+    <meta name="description" content="Compress your images, videos, PDFs, and more with AdProfitX's free online compression tool. No quality loss, no sign-up, instant download.">
+    <meta name="keywords" content="free online compressor, compress images, compress PDFs, compress videos, compress audio, compress documents, file compressor, online compression, fast compression, free tool, AdProfitX">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* --- Global Styles & Attractive Redesign --- */
         :root {
-            --primary-color: #4f46e5; /* Indigo */
-            --secondary-color: #7c3aed; /* Purple */
-            --background-color: #f3f4f6; /* Lighter Gray */
-            --text-color: #111827; /* Darker Gray */
-            --subtle-text: #6b7280;
-            --white: #ffffff;
-            --success: #10b981; /* Emerald Green */
-            --border-color: #e5e7eb;
-            --border-radius: 12px;
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+            --text-color: #333;
+            --white: #fff;
+            --border-color: #dee2e6;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.7;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            overflow-x: hidden;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        section { padding: 80px 0; }
-        h1, h2, h3 { font-weight: 700; line-height: 1.2; }
-        h1 { font-size: 3.5rem; }
-        h2 { font-size: 2.5rem; text-align: center; margin-bottom: 50px; }
 
-        /* --- Attractive Header / Hero Section --- */
-        .hero {
-            background-image: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--dark-bg);
             color: var(--white);
+            padding: 15px 0;
             text-align: center;
-            padding: 100px 20px 60px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+
+        header .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient to right, var(--primary-color), #0056b3);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
         .hero h1 {
-            font-weight: 800;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            font-size: 3em;
+            margin-bottom: 15px;
+            line-height: 1.2;
         }
-        .hero .subheadline {
-            font-size: 1.25rem;
-            max-width: 650px;
-            margin: 20px auto 0;
+
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 30px;
             opacity: 0.9;
         }
 
-        /* --- AdSense Slots --- */
-        .adsense-slot {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 20px auto;
-            min-height: 90px;
-        }
-        
-        /* --- FUNCTIONAL Uploader Tool --- */
-        .uploader-section { padding-top: 60px; }
-        .upload-box {
-            border: 2px dashed var(--border-color);
-            border-radius: var(--border-radius);
-            padding: 40px;
-            background-color: var(--white);
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-        }
-        .upload-box:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-color);
-        }
-        .upload-icon { width: 60px; height: 60px; margin: 0 auto 20px; color: var(--primary-color); }
-        .upload-box p { font-size: 1.1rem; color: var(--subtle-text); }
-        .cta-button {
-            background-image: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        .hero .cta-button {
+            background-color: var(--success-color);
             color: var(--white);
-            border: none;
-            padding: 16px 32px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 15px 30px;
+            font-size: 1.2em;
             text-decoration: none;
+            border-radius: 50px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
             display: inline-block;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        .cta-button:hover { transform: scale(1.05); box-shadow: var(--shadow-lg); }
 
-        /* File List Styles */
-        #file-list-container { margin-top: 40px; max-width: 800px; margin-left: auto; margin-right: auto; }
-        .file-item {
-            display: flex;
-            align-items: center;
-            background: var(--white);
-            padding: 15px;
+        .hero .cta-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* AdSense Slot - Top Banner */
+        .adsense-top-banner {
+            margin: 30px auto;
+            text-align: center;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Tool Cards Section */
+        .tool-cards {
+            padding: 50px 0;
+            background-color: var(--white);
             border-radius: 8px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        .file-info { flex-grow: 1; text-align: left; }
-        .file-name { font-weight: 600; }
-        .file-size { font-size: 0.9rem; color: var(--subtle-text); }
-        .progress-bar-container { width: 120px; height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin: 0 15px; }
-        .progress-bar { width: 0%; height: 100%; background: var(--primary-color); transition: width 1.5s ease; }
-        .status { font-weight: 600; width: 120px; text-align: left; }
-        .status.compressed { color: var(--success); }
-        .download-btn {
-            background-color: var(--success); color: white; border: none; padding: 5px 10px; font-size: 0.9rem;
-            border-radius: 5px; cursor: pointer; display: none;
-        }
-        .action-buttons { display: none; margin-top: 30px; gap: 15px; justify-content: center; }
 
-        /* --- Tool Cards Section --- */
-        #tool-cards { background-color: var(--white); }
-        .tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        .tool-cards h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
         .tool-card {
-            background-color: var(--background-color);
+            background-color: var(--light-bg);
             border: 1px solid var(--border-color);
-            border-radius: var(--border-radius);
+            border-radius: 10px;
             padding: 30px;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
-        .tool-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
-        .tool-card .icon { width: 50px; height: 50px; margin: 0 auto 20px; color: var(--primary-color); }
-        .tool-card h3 { font-size: 1.4rem; margin-bottom: 10px; }
-        .tool-card p { color: var(--subtle-text); margin-bottom: 20px; font-size: 0.95rem; }
-        .cta-button-small {
-            background-color: var(--white); color: var(--primary-color); padding: 10px 20px;
-            font-size: 1rem; font-weight: 600; border-radius: 8px; text-decoration: none;
-            border: 1px solid var(--border-color); transition: all 0.3s ease;
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-        .tool-card:hover .cta-button-small { background-color: var(--primary-color); color: var(--white); }
 
-        /* --- Reviews Section --- */
-        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
-        .review-card { background-color: var(--white); border-radius: var(--border-radius); padding: 30px; box-shadow: var(--shadow); }
-        .review-stars { color: #f59e0b; font-size: 1.2rem; margin-bottom: 15px; }
-        .review-card blockquote { font-size: 1.05rem; border-left: 3px solid var(--primary-color); padding-left: 20px; margin: 0 0 15px 0; }
-        .review-author { font-weight: 600; text-align: right; }
-
-        /* --- FAQ Section --- */
-        #faq { background-color: var(--white); }
-        .faq-item summary {
-            font-size: 1.2rem; font-weight: 600; padding: 20px; cursor: pointer; list-style: none;
-            position: relative; transition: background-color 0.2s ease;
+        .tool-card i {
+            font-size: 3.5em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
         }
-        .faq-item { border: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: 15px; background: #fff; overflow: hidden; }
-        .faq-item:hover { border-color: var(--primary-color); }
-        .faq-item summary::after { content: '+'; font-size: 1.8rem; color: var(--primary-color); position: absolute; right: 20px; top: 50%; transform: translateY(-50%) rotate(0deg); transition: transform 0.3s ease; }
-        .faq-item[open] summary::after { transform: translateY(-50%) rotate(45deg); }
-        .faq-item[open] summary { background-color: #f3f4f6; }
-        .faq-item div { padding: 0 20px 20px; color: var(--subtle-text); }
 
-        /* --- Footer --- */
-        footer { background-color: var(--text-color); color: #9ca3af; padding-top: 40px; font-size: 0.95rem; }
-        .footer-content { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 40px; padding-bottom: 40px; }
-        .footer-about, .footer-links { flex: 1; min-width: 220px; }
-        .footer-about h4, .footer-links h4 { color: var(--white); margin-bottom: 20px; font-size: 1.2rem; }
-        .footer-links ul { list-style: none; }
-        .footer-links li { margin-bottom: 12px; }
-        .footer-links a { color: #9ca3af; text-decoration: none; transition: color 0.3s ease; }
-        .footer-links a:hover { color: var(--white); }
-        .footer-bottom { border-top: 1px solid #374151; text-align: center; padding: 25px 0; }
+        .tool-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: var(--dark-bg);
+        }
+
+        .tool-card p {
+            font-size: 1em;
+            color: var(--secondary-color);
+            margin-bottom: 25px;
+        }
+
+        .tool-card .cta-button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 25px;
+            font-size: 1em;
+            text-decoration: none;
+            border-radius: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        .tool-card .cta-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* AdSense Slot - Sidebar / Inline */
+        .adsense-inline {
+            margin: 40px auto;
+            text-align: center;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Features/Benefits Section */
+        .features {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .feature-item {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-item i {
+            font-size: 3em;
+            color: var(--success-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-item h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--dark-bg);
+        }
+
+        .feature-item p {
+            color: var(--secondary-color);
+        }
+
+        /* AI-Generated User Reviews */
+        .user-reviews {
+            padding: 60px 0;
+            background-color: var(--white);
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .user-reviews h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .review-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .review-card {
+            background-color: var(--light-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .review-card .stars {
+            color: var(--warning-color);
+            margin-bottom: 10px;
+        }
+
+        .review-card .reviewer-name {
+            font-weight: bold;
+            margin-top: 15px;
+            color: var(--dark-bg);
+        }
+
+        .review-card p {
+            font-style: italic;
+            color: var(--text-color);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 60px 0;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .faq-section h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .faq-item {
+            background-color: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+
+        .faq-question {
+            padding: 18px 25px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--dark-bg);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--white);
+            transition: background-color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background-color: #f0f0f0;
+        }
+
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            background-color: #fefefe;
+            color: var(--secondary-color);
+        }
+
+        .faq-answer p {
+            padding-bottom: 18px;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px; /* Adjust as needed */
+            padding-top: 10px;
+            padding-bottom: 18px;
+        }
+
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-bg);
+            color: var(--white);
+            padding: 40px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer .footer-links {
+            margin-bottom: 20px;
+        }
+
+        footer .footer-links a {
+            color: var(--white);
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1em;
+            transition: color 0.3s ease;
+        }
+
+        footer .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        footer p {
+            font-size: 0.9em;
+            color: #ccc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2em;
+            }
+
+            .hero p {
+                font-size: 1em;
+            }
+
+            .card-grid, .feature-grid, .review-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tool-cards h2, .features h2, .user-reviews h2, .faq-section h2 {
+                font-size: 2em;
+            }
+
+            .tool-card {
+                padding: 20px;
+            }
+
+            .faq-question {
+                font-size: 1em;
+                padding: 15px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 50px 15px;
+            }
+
+            .hero h1 {
+                font-size: 1.8em;
+            }
+
+            .hero p {
+                font-size: 0.9em;
+            }
+
+            .hero .cta-button {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+
+            .tool-card i {
+                font-size: 2.8em;
+            }
+
+            .tool-card h3 {
+                font-size: 1.5em;
+            }
+
+            footer .footer-links a {
+                display: block;
+                margin: 10px 0;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <header class="hero">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4313544696010088"
+          crossorigin="anonymous"></script>
+
+    <header>
         <div class="container">
-            <h1>Effortless File Compression is Here</h1>
-            <p class="subheadline">AdProfitX makes file compression beautiful, fast, secure, and 100% free. No sign-up needed!</p>
+            <a href="/" class="logo">AdProfitX</a>
         </div>
     </header>
 
-    <div class="adsense-slot">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4313544696010088"
-             crossorigin="anonymous"></script>
+    <section class="adsense-top-banner container">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-4313544696010088"
-             data-ad-slot="8669403837"
+             data-ad-slot="2931939531"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
         <script>
              (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-    </div>
+    </section>
 
     <main>
-        <section class="uploader-section" id="compressor-tool">
+        <section class="hero">
             <div class="container">
-                <div class="upload-box" id="upload-box">
-                    <input type="file" id="fileInput" multiple style="display: none;">
-                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l-3.75 3.75M12 9.75l3.75 3.75M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM21 21H3" />
-                    </svg>
-                    <p><b>Click to select files</b> or drag and drop them here.<br>Supports Images, PDFs, Videos, and more.</p>
-                </div>
-                
-                <div id="file-list-container"></div>
-                
-                <div class="action-buttons" id="action-buttons">
-                    <button class="cta-button" id="compressBtn">Compress Files</button>
-                    <button class="cta-button-small" id="clearBtn">Clear All</button>
-                </div>
+                <h1>Free Online File Compressor – Compress Images, PDFs, Videos & More</h1>
+                <p>AdProfitX makes file compression fast, secure, and 100% free. No sign-up needed!</p>
+                <a href="#tool-cards" class="cta-button">Upload & Compress Now</a>
             </div>
         </section>
 
-        <section id="tool-cards">
+        <section id="tool-cards" class="tool-cards">
             <div class="container">
-                <h2>Compress Any File Type</h2>
-                <div class="tool-grid">
+                <h2>Our Free Online Compression Tools</h2>
+                <div class="card-grid">
                     <div class="tool-card">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" /></svg>
+                        <i class="fas fa-image"></i>
                         <h3>Image Compressor</h3>
-                        <p>Reduce JPG, PNG, GIF files without losing visual quality. Perfect for websites.</p>
-                        <a href="#compressor-tool" class="cta-button-small">Start Compressing</a>
+                        <p>Reduce image file size without losing quality. Supports JPG, PNG, GIF, and more.</p>
+                        <a href="/image-compressor" class="cta-button">Try Image Compressor</a>
                     </div>
                     <div class="tool-card">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
+                        <i class="fas fa-file-pdf"></i>
                         <h3>PDF Compressor</h3>
-                        <p>Make PDF files smaller for easy sharing via email or web upload.</p>
-                        <a href="#compressor-tool" class="cta-button-small">Start Compressing</a>
+                        <p>Shrink your PDF documents for easier sharing and faster uploads.</p>
+                        <a href="/pdf-compressor" class="cta-button">Try PDF Compressor</a>
                     </div>
                     <div class="tool-card">
-                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" /></svg>
+                        <i class="fas fa-video"></i>
                         <h3>Video Compressor</h3>
-                        <p>Shrink MP4, MOV, and AVI videos while maintaining quality.</p>
-                        <a href="#compressor-tool" class="cta-button-small">Start Compressing</a>
+                        <p>Compress large video files for web, email, or social media sharing.</p>
+                        <a href="/video-compressor" class="cta-button">Try Video Compressor</a>
                     </div>
                     <div class="tool-card">
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z" /></svg>
+                        <i class="fas fa-headphones-alt"></i>
                         <h3>Audio Compressor</h3>
-                        <p>Reduce the size of MP3, WAV, and M4A audio files for any use case.</p>
-                        <a href="#compressor-tool" class="cta-button-small">Start Compressing</a>
+                        <p>Optimize audio files for smaller sizes, perfect for podcasts and music.</p>
+                        <a href="/audio-compressor" class="cta-button">Try Audio Compressor</a>
+                    </div>
+                    <div class="tool-card">
+                        <i class="fas fa-file-word"></i>
+                        <h3>Document Compressor</h3>
+                        <p>Compress Word, Excel, and PowerPoint files for efficient storage and transfer.</p>
+                        <a href="/document-compressor" class="cta-button">Try Doc Compressor</a>
+                    </div>
+                    <div class="tool-card">
+                        <i class="fas fa-file-archive"></i>
+                        <h3>ZIP Compressor</h3>
+                        <p>Reduce the size of your ZIP archives for faster downloads and uploads.</p>
+                        <a href="/zip-compressor" class="cta-button">Try ZIP Compressor</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <div class="container">
-            <div class="adsense-slot">
-                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4313544696010088"
-                     crossorigin="anonymous"></script>
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-4313544696010088"
-                     data-ad-slot="8669403837"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                <script>
-                     (adsbygoogle = window.adsbygoogle || []).push({});
-                </script>
-            </div>
-        </div>
-        
-        <section id="reviews">
-            <div class="container">
-                <h2>Loved by Thousands of Users</h2>
-                <div class="reviews-grid">
-                    <div class="review-card">
-                        <div class="review-stars">★★★★★</div>
-                        <blockquote>"AdProfitX is a lifesaver! I compressed a huge video for a client in seconds. The quality was amazing and it's completely free. Highly recommended!"</blockquote>
-                        <p class="review-author">– Maria S., Freelance Designer</p>
-                    </div>
-                    <div class="review-card">
-                        <div class="review-stars">★★★★★</div>
-                        <blockquote>"As a student, I constantly need to compress PDFs for assignments. This tool is fast, requires no login, and works perfectly every time. The best free file compressor out there."</blockquote>
-                        <p class="review-author">– David L., University Student</p>
-                    </div>
-                    <div class="review-card">
-                        <div class="review-stars">★★★★★</div>
-                        <blockquote>"I was skeptical about an online tool being secure, but AdProfitX deleted my files right after I downloaded them. It's fast, secure, and incredibly simple to use."</blockquote>
-                        <p class="review-author">– Alex P., Small Business Owner</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="faq">
-            <div class="container">
-                <h2>Frequently Asked Questions</h2>
-                <details class="faq-item">
-                    <summary>How to compress files online?</summary>
-                    <div><p>It's simple! Click the upload area, select your files, and then click the "Compress Files" button. Our tool automatically reduces their size and provides a download link for each.</p></div>
-                </details>
-                <details class="faq-item">
-                    <summary>What is the best free file compressor?</summary>
-                    <div><p>AdProfitX is a top choice because it's fast, secure, supports multiple file types, and doesn't require software installation or sign-up. Our high-quality compression algorithms ensure minimal quality loss.</p></div>
-                </details>
-                <details class="faq-item">
-                    <summary>Is online file compression safe?</summary>
-                    <div><p>Yes, at AdProfitX, security is a priority. We use secure SSL (HTTPS) for all transfers. Your files are processed in your browser and are automatically deleted from our servers a short time after compression, ensuring your data remains private.</p></div>
-                </details>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="adsense-slot">
-            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4313544696010088"
-                 crossorigin="anonymous"></script>
+        <section class="adsense-inline container">
             <ins class="adsbygoogle"
                  style="display:block"
                  data-ad-client="ca-pub-4313544696010088"
-                 data-ad-slot="8669403837"
+                 data-ad-slot="2931939531"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
             <script>
                  (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
-        </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h2>Why Choose AdProfitX Online Compressor?</h2>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3>Blazing Fast</h3>
+                        <p>Our powerful servers ensure quick compression of even large files.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-lock"></i>
+                        <h3>Secure & Private</h3>
+                        <p>Your files are processed securely and deleted after a short period.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>High Accuracy</h3>
+                        <p>Maintain optimal quality while significantly reducing file size.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Responsive Design</h3>
+                        <p>Compress files seamlessly on any device – desktop, tablet, or mobile.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-dollar-sign"></i>
+                        <h3>Completely Free</h3>
+                        <p>No hidden costs, no subscriptions – just free, unlimited compression.</p>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>User-Friendly</h3>
+                        <p>Simple drag-and-drop interface for effortless file compression.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="user-reviews">
+            <div class="container">
+                <h2>What Our Users Say</h2>
+                <div class="review-grid">
+                    <div class="review-card">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p>"AdProfitX saved me so much time! I compressed a huge video file in seconds without losing quality. Highly recommend!"</p>
+                        <div class="reviewer-name">- Sarah M.</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p>"As a photographer, compressing images without quality loss is crucial. AdProfitX delivers perfectly every time. A lifesaver!"</p>
+                        <div class="reviewer-name">- David L.</div>
+                    </div>
+                    <div class="review-card">
+                        <div class="stars">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p>"Finally, a free online compressor that actually works and is super fast. No more struggling with large PDF files!"</p>
+                        <div class="reviewer-name">- Emily R.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="faq-section">
+            <div class="container">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>How to compress files online with AdProfitX?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Simply drag and drop your files into the upload area or click "Upload & Compress". Choose your compression settings (if applicable) and our tool will do the rest. Once done, you can instantly download your compressed file(s).</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What is the best free file compressor?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>AdProfitX Online Compressor is considered one of the best free file compressors due to its high accuracy, support for multiple file types (images, PDFs, videos, audio, documents), fast processing, and user-friendly interface, all without requiring any sign-up.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Is online file compression safe?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, AdProfitX prioritizes your security and privacy. All files uploaded for compression are processed using secure connections (HTTPS) and are automatically deleted from our servers within a short period after compression, ensuring your data remains private.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>Do I need to install any software to use AdProfitX?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>No, AdProfitX is an entirely online tool. You don't need to download or install any software. Simply access our website from your browser, and you can start compressing files immediately.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">
+                            <span>What file types can AdProfitX compress?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>AdProfitX supports a wide range of file types including images (JPG, PNG, GIF, SVG, BMP, TIFF), PDFs, videos (MP4, MOV, AVI, WMV, FLV), audio (MP3, WAV, AAC), and documents (DOC, DOCX, XLS, XLSX, PPT, PPTX).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-about">
-                    <h4>AdProfitX Compressor</h4>
-                    <p>Your one-stop solution for fast, free, and secure file compression. We help you reduce file sizes right from your browser.</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Tools</h4>
-                    <ul>
-                        <li><a href="#compressor-tool">Image Compressor</a></li>
-                        <li><a href="#compressor-tool">PDF Compressor</a></li>
-                        <li><a href="#compressor-tool">Video Compressor</a></li>
-                        <li><a href="#compressor-tool">Audio Compressor</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Contact</a></li>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
-                    </ul>
-                </div>
+            <div class="footer-links">
+                <a href="/image-compressor">Image Compressor</a>
+                <a href="/pdf-compressor">PDF Compressor</a>
+                <a href="/video-compressor">Video Compressor</a>
+                <a href="/audio-compressor">Audio Compressor</a>
+                <a href="/document-compressor">Document Compressor</a>
+                <a href="/zip-compressor">ZIP Compressor</a>
+                <a href="/terms-of-service">Terms of Service</a>
+                <a href="/privacy-policy">Privacy Policy</a>
+                <a href="/contact-us">Contact Us</a>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 AdProfitX. All Rights Reserved. Karachi, Pakistan.</p>
-            </div>
+            <p>&copy; 2025 AdProfitX. All rights reserved.</p>
         </div>
     </footer>
-    
-<script>
-// --- Uploader & Compression Simulation Script ---
-const uploadBox = document.getElementById('upload-box');
-const fileInput = document.getElementById('fileInput');
-const fileListContainer = document.getElementById('file-list-container');
-const actionButtons = document.getElementById('action-buttons');
-const compressBtn = document.getElementById('compressBtn');
-const clearBtn = document.getElementById('clearBtn');
 
-// Trigger file input click
-uploadBox.addEventListener('click', () => fileInput.click());
+    <script>
+        // Lazy loading for images (if any were added with data-src)
+        document.addEventListener("DOMContentLoaded", function() {
+            var lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 
-// Handle drag and drop
-uploadBox.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadBox.style.borderColor = 'var(--primary-color)';
-});
-uploadBox.addEventListener('dragleave', () => {
-    uploadBox.style.borderColor = 'var(--border-color)';
-});
-uploadBox.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadBox.style.borderColor = 'var(--border-color)';
-    fileInput.files = e.dataTransfer.files;
-    handleFiles(fileInput.files);
-});
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.remove("lazy");
+                            lazyImageObserver.unobserve(lazyImage);
+                        }
+                    });
+                });
 
-// Handle file selection
-fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                lazyImages.forEach(function(lazyImage) {
+                    lazyImage.src = lazyImage.dataset.src;
+                });
+            }
 
-function handleFiles(files) {
-    if (files.length === 0) return;
-    fileListContainer.innerHTML = ''; // Clear previous list
-    
-    Array.from(files).forEach(file => {
-        const fileItem = document.createElement('div');
-        fileItem.className = 'file-item';
-        
-        // Simulating data for the file object
-        file.originalSize = file.size;
-        
-        fileItem.innerHTML = `
-            <div class="file-info">
-                <div class="file-name">${file.name}</div>
-                <div class="file-size">${formatBytes(file.size)}</div>
-            </div>
-            <div class="progress-bar-container">
-                <div class="progress-bar"></div>
-            </div>
-            <span class="status">Ready</span>
-            <button class="download-btn">Download</button>
-        `;
-        fileListContainer.appendChild(fileItem);
-    });
-    
-    actionButtons.style.display = 'flex';
-}
+            // FAQ Accordion functionality
+            const faqItems = document.querySelectorAll('.faq-item');
 
-function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-}
-
-compressBtn.addEventListener('click', () => {
-    const fileItems = document.querySelectorAll('.file-item');
-    fileItems.forEach((item, index) => {
-        const progressBar = item.querySelector('.progress-bar');
-        const status = item.querySelector('.status');
-        const downloadBtn = item.querySelector('.download-btn');
-        
-        status.textContent = 'Compressing...';
-        status.classList.remove('compressed');
-        
-        // Simulate compression delay and success
-        setTimeout(() => {
-            progressBar.style.width = '100%';
-            setTimeout(() => {
-                status.textContent = 'Compressed';
-                status.classList.add('compressed');
-                downloadBtn.style.display = 'inline-block';
-                
-                // Simulate file size reduction in display
-                const sizeElement = item.querySelector('.file-size');
-                const originalSizeBytes = parseFloat(sizeElement.textContent) * (1024 ** ['Bytes', 'KB', 'MB', 'GB'].indexOf(sizeElement.textContent.split(' ')[1]));
-                const newSize = originalSizeBytes * (Math.random() * (0.6 - 0.3) + 0.3); // Reduce by 40-70%
-                sizeElement.innerHTML = `${formatBytes(originalSizeBytes)} &rarr; <b style="color:var(--success)">${formatBytes(newSize)}</b>`;
-
-            }, 1500);
-        }, index * 200); // Stagger the start of compression
-    });
-});
-
-clearBtn.addEventListener('click', () => {
-    fileListContainer.innerHTML = '';
-    actionButtons.style.display = 'none';
-    fileInput.value = ''; // Reset file input
-});
-
-</script>
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
