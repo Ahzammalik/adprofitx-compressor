@@ -7,7 +7,8 @@
     <meta name="description" content="Compress your images, videos, PDFs, and more with AdProfitX's free online compression tool. No quality loss, no sign-up, instant download.">
     <meta name="keywords" content="free online compressor, compress images, compress PDFs, compress videos, compress audio, compress documents, file compressor, online compression, fast compression, free tool, AdProfitX">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="icon" href="favicon.ico" type="image/x-icon"> <style>
+    <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+    <style>
         :root {
             --primary-color: #007bff;
             --secondary-color: #6c757d;
@@ -55,7 +56,7 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(to right, var(--primary-color), #0056b3); /* Corrected gradient syntax */
+            background: linear-gradient(to right, var(--primary-color), #0056b3);
             color: var(--white);
             padding: 80px 20px;
             text-align: center;
@@ -293,7 +294,7 @@
         }
 
         .faq-list {
-            max-width: 800px; /* Constrain FAQ width for readability */
+            max-width: 800px;
             margin: 0 auto;
         }
 
@@ -341,13 +342,194 @@
         }
 
         .faq-item.active .faq-answer {
-            max-height: 200px; /* Adjust as needed */
+            max-height: 200px;
             padding-top: 10px;
             padding-bottom: 18px;
         }
 
         .faq-item.active .faq-question i {
             transform: rotate(180deg);
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 60px 0;
+            background-color: var(--white);
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .about-section h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .about-content p {
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        /* Blog Section */
+        .blog-section {
+            padding: 60px 0;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .blog-section h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .blog-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .blog-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .blog-card-content {
+            padding: 20px;
+        }
+
+        .blog-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: var(--dark-bg);
+        }
+
+        .blog-card p {
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .blog-card .read-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .blog-card .read-more:hover {
+            text-decoration: underline;
+        }
+
+        /* Privacy Policy, Terms, Disclaimer Sections */
+        .policy-section {
+            padding: 60px 0;
+            background-color: var(--white);
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .policy-section h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .policy-content {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .policy-content h3 {
+            color: var(--dark-bg);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .policy-content p, .policy-content ul {
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+        }
+
+        .policy-content ul {
+            padding-left: 20px;
+        }
+
+        .policy-content li {
+            margin-bottom: 10px;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 60px 0;
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .contact-section h2 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .contact-info {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .contact-info h3 {
+            color: var(--dark-bg);
+            margin-bottom: 20px;
+        }
+
+        .contact-info p {
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+
+        .contact-info i {
+            color: var(--primary-color);
+            margin-right: 10px;
+            width: 20px;
         }
 
         /* Footer */
@@ -390,11 +572,12 @@
                 font-size: 1em;
             }
 
-            .card-grid, .feature-grid, .review-grid {
+            .card-grid, .feature-grid, .review-grid, .blog-grid, .contact-content {
                 grid-template-columns: 1fr;
             }
 
-            .tool-cards h2, .features h2, .user-reviews h2, .faq-section h2 {
+            .tool-cards h2, .features h2, .user-reviews h2, .faq-section h2, 
+            .about-section h2, .blog-section h2, .policy-section h2, .contact-section h2 {
                 font-size: 2em;
             }
 
@@ -596,6 +779,106 @@
             </div>
         </section>
 
+        <section class="about-section" id="about">
+            <div class="container">
+                <h2>About AdProfitX</h2>
+                <div class="about-content">
+                    <p>AdProfitX was founded in 2023 with a simple mission: to provide high-quality, free online tools that help people work more efficiently. Our team of developers and designers are passionate about creating solutions that solve real-world problems.</p>
+                    <p>Our flagship product, the AdProfitX Online Compressor, was born out of a need for a simple, fast, and reliable way to compress files without sacrificing quality. Unlike many other online tools, we don't require sign-ups, subscriptions, or payments. We believe that essential tools should be accessible to everyone.</p>
+                    <p>At AdProfitX, we prioritize user privacy and security. All file processing happens on our secure servers, and we automatically delete uploaded files after a short period. We never access, view, or share your files with third parties.</p>
+                    <p>As we continue to grow, we're committed to expanding our suite of tools while maintaining our core values of simplicity, reliability, and user-focus. We welcome feedback and suggestions from our users to help us improve our services.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="blog-section" id="blog">
+            <div class="container">
+                <h2>Latest from Our Blog</h2>
+                <div class="blog-grid">
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%201%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>How to Compress Images Without Losing Quality</h3>
+                            <p>Learn the best techniques for reducing image file sizes while maintaining visual quality for your website or applications.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%202%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>The Ultimate Guide to PDF Compression</h3>
+                            <p>Discover why PDF files get so large and how to effectively compress them for easier sharing and storage.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%203%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>Video Compression Techniques for Content Creators</h3>
+                            <p>Optimize your video content for various platforms without sacrificing quality with these expert tips.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%204%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>Understanding Different File Compression Algorithms</h3>
+                            <p>A deep dive into the various compression algorithms and which ones work best for different file types.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%205%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>How File Compression Benefits Website Performance</h3>
+                            <p>Learn how compressing your website assets can significantly improve loading times and user experience.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%206%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>The Future of Online File Compression Tools</h3>
+                            <p>Exploring emerging technologies and trends that will shape the next generation of compression tools.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%207%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>Audio Compression: Balancing Quality and File Size</h3>
+                            <p>Find the perfect balance between audio quality and file size for your podcasts, music, and other audio projects.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%208%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>5 Common File Compression Mistakes to Avoid</h3>
+                            <p>Learn about the most common compression pitfalls and how to avoid them for optimal results.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%209%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>Comparing Lossy vs. Lossless Compression</h3>
+                            <p>Understand the differences between lossy and lossless compression and when to use each approach.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                    <div class="blog-card">
+                        <img src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22300%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20300%20200%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_1823b9b8b6f%20text%20%7B%20fill%3A%23999%3Bfont-weight%3Anormal%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A15pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_1823b9b8b6f%22%3E%3Crect%20width%3D%22300%22%20height%3D%22200%22%20fill%3D%22%23373940%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22110%22%20y%3D%22106.5%22%3EImage%2010%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="Blog Image">
+                        <div class="blog-card-content">
+                            <h3>How to Choose the Right Compression Tool for Your Needs</h3>
+                            <p>A comprehensive guide to selecting the best compression tool based on your specific requirements and file types.</p>
+                            <a href="#" class="read-more">Read More →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="faq-section">
             <div class="container">
                 <h2>Frequently Asked Questions</h2>
@@ -648,6 +931,138 @@
                 </div>
             </div>
         </section>
+
+        <section class="policy-section" id="privacy">
+            <div class="container">
+                <h2>Privacy Policy</h2>
+                <div class="policy-content">
+                    <p>Last Updated: January 1, 2025</p>
+                    
+                    <h3>1. Information We Collect</h3>
+                    <p>When you use AdProfitX, we may collect certain information automatically, including:</p>
+                    <ul>
+                        <li>Technical information about your device and browser</li>
+                        <li>Your IP address and general location data</li>
+                        <li>Usage data, such as which features you use and how often</li>
+                    </ul>
+                    
+                    <h3>2. How We Use Your Information</h3>
+                    <p>We use the information we collect to:</p>
+                    <ul>
+                        <li>Provide and maintain our services</li>
+                        <li>Improve and optimize our tools</li>
+                        <li>Analyze usage patterns to enhance user experience</li>
+                        <li>Display relevant advertisements through Google AdSense</li>
+                    </ul>
+                    
+                    <h3>3. File Uploads and Processing</h3>
+                    <p>When you upload files to AdProfitX for compression:</p>
+                    <ul>
+                        <li>Files are processed on our secure servers</li>
+                        <li>We do not access, view, or share your files with third parties</li>
+                        <li>Uploaded files are automatically deleted within 24 hours</li>
+                    </ul>
+                    
+                    <h3>4. Cookies and Tracking Technologies</h3>
+                    <p>We use cookies and similar technologies to:</p>
+                    <ul>
+                        <li>Remember your preferences</li>
+                        <li>Analyze site traffic and usage patterns</li>
+                        <li>Serve personalized advertisements</li>
+                    </ul>
+                    
+                    <h3>5. Third-Party Services</h3>
+                    <p>We use Google AdSense to display advertisements on our site. Google may use cookies to serve ads based on your prior visits to our website and other sites on the Internet.</p>
+                    
+                    <h3>6. Data Security</h3>
+                    <p>We implement appropriate security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.</p>
+                    
+                    <h3>7. Changes to This Policy</h3>
+                    <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page.</p>
+                    
+                    <h3>8. Contact Us</h3>
+                    <p>If you have any questions about this Privacy Policy, please contact us at privacy@adprofitx.com.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="policy-section" id="terms">
+            <div class="container">
+                <h2>Terms and Conditions</h2>
+                <div class="policy-content">
+                    <p>Last Updated: January 1, 2025</p>
+                    
+                    <h3>1. Acceptance of Terms</h3>
+                    <p>By accessing and using AdProfitX, you accept and agree to be bound by these Terms and Conditions.</p>
+                    
+                    <h3>2. Description of Service</h3>
+                    <p>AdProfitX provides online file compression services for various file types, including images, PDFs, videos, and audio files.</p>
+                    
+                    <h3>3. User Responsibilities</h3>
+                    <p>You agree to:</p>
+                    <ul>
+                        <li>Use the service only for lawful purposes</li>
+                        <li>Not upload any malicious or harmful files</li>
+                        <li>Not attempt to disrupt or interfere with the service</li>
+                    </ul>
+                    
+                    <h3>4. Intellectual Property</h3>
+                    <p>All content on AdProfitX, including text, graphics, logos, and software, is the property of AdProfitX and protected by intellectual property laws.</p>
+                    
+                    <h3>5. Limitation of Liability</h3>
+                    <p>AdProfitX shall not be liable for any indirect, incidental, special, or consequential damages resulting from the use or inability to use our services.</p>
+                    
+                    <h3>6. Changes to Terms</h3>
+                    <p>We reserve the right to modify these terms at any time. Continued use of the service constitutes acceptance of the modified terms.</p>
+                    
+                    <h3>7. Governing Law</h3>
+                    <p>These terms shall be governed by and construed in accordance with the laws of the United States.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="policy-section" id="disclaimer">
+            <div class="container">
+                <h2>Disclaimer</h2>
+                <div class="policy-content">
+                    <h3>1. No Warranty</h3>
+                    <p>AdProfitX provides its services on an "as is" and "as available" basis without any warranties, express or implied.</p>
+                    
+                    <h3>2. Limitation of Liability</h3>
+                    <p>AdProfitX shall not be held liable for any data loss, corruption, or any other issues that may arise from using our compression tools.</p>
+                    
+                    <h3>3. Third-Party Content</h3>
+                    <p>Our website may contain links to third-party websites. We have no control over and assume no responsibility for the content of these sites.</p>
+                    
+                    <h3>4. Advertisement Disclaimer</h3>
+                    <p>AdProfitX uses Google AdSense to display advertisements. We are not responsible for the content of these ads or any products or services promoted through them.</p>
+                    
+                    <h3>5. Technical Issues</h3>
+                    <p>We do not guarantee uninterrupted access to our services and are not liable for any downtime or technical issues beyond our control.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section" id="contact">
+            <div class="container">
+                <h2>Contact AdProfitX</h2>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h3>Get in Touch</h3>
+                        <p><i class="fas fa-envelope"></i> Email: support@adprofitx.com</p>
+                        <p><i class="fas fa-globe"></i> Website: www.adprofitx.com</p>
+                        <p><i class="fas fa-clock"></i> Response Time: Within 24-48 hours</p>
+                        <p><i class="fas fa-map-marker-alt"></i> Based in: United States</p>
+                    </div>
+                    <div class="contact-info">
+                        <h3>Business Hours</h3>
+                        <p><i class="fas fa-calendar-alt"></i> Monday - Friday: 9:00 AM - 6:00 PM EST</p>
+                        <p><i class="fas fa-calendar-alt"></i> Saturday: 10:00 AM - 4:00 PM EST</p>
+                        <p><i class="fas fa-calendar-alt"></i> Sunday: Closed</p>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
@@ -659,9 +1074,12 @@
                 <a href="#">Audio Compressor (Soon)</a>
                 <a href="#">Document Compressor (Soon)</a>
                 <a href="#">ZIP Compressor (Soon)</a>
-                <a href="terms-of-service.html">Terms of Service</a>
-                <a href="privacy-policy.html">Privacy Policy</a>
-                <a href="contact-us.html">Contact Us</a>
+                <a href="#about">About Us</a>
+                <a href="#blog">Blog</a>
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#disclaimer">Disclaimer</a>
+                <a href="#contact">Contact Us</a>
             </div>
             <p>&copy; 2025 AdProfitX. All rights reserved.</p>
         </div>
